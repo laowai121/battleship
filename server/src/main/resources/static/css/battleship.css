@@ -1,0 +1,12 @@
+.create-join-game-container {
+    display: inline-block;
+    text-align: center;
+    padding: 50px;
+    background-color: lightblue;
+    border: 5px solid cadetblue;
+    border-radius: 15px;
+}
+
+body {
+    background-color: rgba(211, 196, 200, 0.24);
+}
