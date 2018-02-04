@@ -1,10 +1,13 @@
 .create-join-game-container {
-    display: inline-block;
     text-align: center;
-    padding: 50px;
+    padding: 38px 45px 45px 45px;
+    width: 465px;
     background-color: lightblue;
     border: 5px solid cadetblue;
     border-radius: 15px;
+    height: 255px;
+    margin: auto;
+    box-shadow: 0 0 30px #345d69;
 }
 
 body {
