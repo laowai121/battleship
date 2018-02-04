@@ -1,4 +1,9 @@
 .create-join-game-container {
+    width: 465px;
+    height: 255px;
+}
+
+.battleship-container {
     text-align: center;
     padding: 38px 45px 45px 45px;
     background-color: rgba(173, 216, 230, 0.60);
