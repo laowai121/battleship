@@ -1,6 +1,6 @@
 .create-join-game-container {
-    width: 465px;
-    height: 255px;
+    width: 320px;
+    height: 138px;
 }
 
 .battleship-container {
@@ -15,6 +15,6 @@
 
 body {
     /*background-color: rgba(211, 196, 200, 0.24);*/
-    background-image: url('http://www.kinyu-z.net/data/wallpapers/41/846843.jpg');
+    background-image: url('../img/battleship-background-img.jpg');
     background-size: cover;
 }

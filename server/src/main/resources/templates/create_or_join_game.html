@@ -1,9 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113519000-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-113519000-1');
+    </script>
 
     <title>Battleship Game</title>
 
@@ -14,19 +25,23 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
     <div class="container" style="display: flex; height: 100vh;">
-        <div class="create-join-game-container battleship-container">
-            <h1>Battleship Game</h1>
-            <div class="row" style="margin-top: 21px;">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-primary" style="width: 200px;">Create New Game</button>
+        <div class="battleship-container">
+            <div class="create-join-game-container">
+                <h1>Battleship Game</h1>
+                <div class="row" style="margin-top: 21px;">
+                    <div class="col-md-12">
+                        <button v-on:click="createNewGameClicked" type="button" class="btn btn-primary" style="width: 200px;">Create New Game</button>
+                    </div>
                 </div>
-            </div>
-            <div class="row" style="margin-top: 4px;">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-warning" style="width: 200px;">Join Existing Game</button>
+                <div class="row" style="margin-top: 4px;">
+                    <div class="col-md-12">
+                        <button v-on:click="joinExistingGameClicked" type="button" class="btn btn-warning" style="width: 200px;">Join Existing Game</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,5 +50,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <script th:src="@{js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
+
+    <script th:src="@{js/create_or_join_game.js}" src="../static/js/create_or_join_game.js"></script>
 </body>
 </html>
