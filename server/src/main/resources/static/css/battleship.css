@@ -11,5 +11,7 @@
 }
 
 body {
-    background-color: rgba(211, 196, 200, 0.24);
+    /*background-color: rgba(211, 196, 200, 0.24);*/
+    background-image: url('http://www.kinyu-z.net/data/wallpapers/41/846843.jpg');
+    background-size: cover;
 }
