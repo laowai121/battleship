@@ -29,9 +29,9 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
-    <div class="container" style="display: flex; height: 100vh;">
+    <div id="battleship-app" class="container" style="display: flex; height: 100vh;">
         <div class="battleship-container">
-            <div class="create-join-game-container">
+            <div v-if="createOrJoinGameFormShown" class="create-join-game-container">
                 <h1>Battleship Game</h1>
                 <div class="row" style="margin-top: 21px;">
                     <div class="col-md-12">
@@ -43,6 +43,22 @@
                         <button v-on:click="joinExistingGameClicked" type="button" class="btn btn-warning" style="width: 200px;">Join Existing Game</button>
                     </div>
                 </div>
+            </div>
+            <div v-if="createNewGameFormShown" class="create-new-game-container">
+                <form>
+                    <div class="form-group row">
+                        <div class="form-group row">
+                            <label class="col-md-2" for="create-game-player-name">Player Name</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="create-game-player-name" placeholder="Enter Player Name" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-success">Create</button>
+                            <button type="button" class="btn btn-warning">Create as Spectator</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
