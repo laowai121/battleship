@@ -26,12 +26,14 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet" />
+
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
     <div id="battleship-app" class="container" style="display: flex; height: 100vh;">
         <div class="battleship-container">
-            <div v-if="createOrJoinGameFormShown" class="create-join-game-container">
+            <div v-if="formDisplayed == FORM.MAIN_MENU" class="create-join-game-container">
                 <h1>Battleship Game</h1>
                 <div class="row" style="margin-top: 21px;">
                     <div class="col-md-12">
@@ -44,21 +46,29 @@
                     </div>
                 </div>
             </div>
-            <div v-if="createNewGameFormShown" class="create-new-game-container">
-                <form>
-                    <div class="form-group row">
-                        <div class="form-group row">
-                            <label class="col-md-2" for="create-game-player-name">Player Name</label>
-                            <div class="col-md-10">
-                                <input type="text" class="form-control" id="create-game-player-name" placeholder="Enter Player Name" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-success">Create</button>
-                            <button type="button" class="btn btn-warning">Create as Spectator</button>
-                        </div>
+            <div v-if="formDisplayed == FORM.CREATE_NEW_GAME" class="create-new-game-container">
+                <div class="row">
+                    <label class="col-md-2" for="create-game-player-name">Player Name</label>
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" id="create-game-player-name" placeholder="Enter Player Name" />
                     </div>
-                </form>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-primary btn-block">Create Game</button>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 4px;">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-warning btn-block">Create Game as Spectator</button>
+                    </div>
+                </div>
+                <hr style="border: 1px solid #579596; box-shadow: 0 0 30px #345d69;" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <button v-on:click="backToMenuClicked" type="button" class="btn btn-danger btn-block"><i class="fas fa-arrow-left"></i> Back to Menu</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
