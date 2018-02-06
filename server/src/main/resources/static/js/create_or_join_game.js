@@ -7,7 +7,8 @@ var FORM = {
 new Vue({
     el: '#battleship-app',
     data: {
-        formDisplayed: FORM.MAIN_MENU
+        formDisplayed: FORM.MAIN_MENU,
+        formLoading: false
     },
     methods: {
         createNewGameClicked: function () {
@@ -20,7 +21,9 @@ new Vue({
             this.formDisplayed = FORM.JOIN_EXISTING_GAME;
         },
         createAndJoinNewGame: function () {
-
+            jQuery('input').attr('disabled', 'disabled');
+            jQuery('button').attr('disabled', 'disabled');
+            this.formLoading = true;
         }
     }
 });
