@@ -21,8 +21,20 @@
     box-shadow: 0 0 30px #345d69;
 }
 
+.battleship-container label {
+    text-align: right;
+}
+
 body {
     /*background-color: rgba(211, 196, 200, 0.24);*/
     background-image: url('../img/battleship-background-img.jpg');
     background-size: cover;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
 }

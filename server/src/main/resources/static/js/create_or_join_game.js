@@ -18,6 +18,9 @@ new Vue({
         },
         joinExistingGameClicked: function () {
             this.formDisplayed = FORM.JOIN_EXISTING_GAME;
+        },
+        createAndJoinNewGame: function () {
+
         }
     }
 });
