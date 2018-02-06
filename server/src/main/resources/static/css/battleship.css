@@ -4,6 +4,12 @@
 
 .create-new-game-container {
     padding: 45px 40px;
+    min-width: 440px;
+}
+
+.join-existing-game-container {
+    padding: 45px 40px;
+    min-width: 440px;
 }
 
 .battleship-container {

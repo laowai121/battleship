@@ -37,20 +37,22 @@
                 <h1>Battleship Game</h1>
                 <div class="row" style="margin-top: 21px;">
                     <div class="col-md-12">
-                        <button v-on:click="createNewGameClicked" type="button" class="btn btn-primary" style="width: 200px;">Create New Game</button>
+                        <button v-on:click="createNewGameClicked" type="button" class="btn btn-primary btn-block">Create New Game</button>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 4px;">
                     <div class="col-md-12">
-                        <button v-on:click="joinExistingGameClicked" type="button" class="btn btn-warning" style="width: 200px;">Join Existing Game</button>
+                        <button v-on:click="joinExistingGameClicked" type="button" class="btn btn-warning btn-block">Join Existing Game</button>
                     </div>
                 </div>
             </div>
             <div v-if="formDisplayed == FORM.CREATE_NEW_GAME" class="create-new-game-container">
-                <div class="row">
-                    <label class="col-md-2" for="create-game-player-name">Player Name</label>
-                    <div class="col-md-10">
-                        <input type="text" class="form-control" id="create-game-player-name" placeholder="Enter Player Name" />
+                <div class="row" style="margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label class="col-md-2" for="create-game-player-name">Player</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="create-game-player-name" placeholder="Enter Player Name" />
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -63,7 +65,49 @@
                         <button type="button" class="btn btn-warning btn-block">Create Game as Spectator</button>
                     </div>
                 </div>
-                <hr style="border: 1px solid #579596; box-shadow: 0 0 30px #345d69;" />
+                <hr style="border: 1px solid #579596; box-shadow: 0 0 30px #345d69; margin: 12px 0px;" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <button v-on:click="backToMenuClicked" type="button" class="btn btn-danger btn-block"><i class="fas fa-arrow-left"></i> Back to Menu</button>
+                    </div>
+                </div>
+            </div>
+            <div v-if="formDisplayed == FORM.JOIN_EXISTING_GAME" class="join-existing-game-container">
+                <div class="row" style="margin-bottom: 4px;">
+                    <div class="form-group">
+                        <label class="col-md-2" for="join-game-player-name">Player</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="join-game-player-name" placeholder="Enter Player Name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 4px;">
+                    <div class="form-group">
+                        <label class="col-md-2" for="join-game-game-id">Id</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="join-game-game-id" placeholder="Enter Game Id" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label class="col-md-2" for="join-game-game-key">Key</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="join-game-game-key" placeholder="Enter Game Key" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-primary btn-block">Join Game</button>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 4px;">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-warning btn-block">Join Game as Spectator</button>
+                    </div>
+                </div>
+                <hr style="border: 1px solid #579596; box-shadow: 0 0 30px #345d69; margin: 12px 0px;" />
                 <div class="row">
                     <div class="col-md-12">
                         <button v-on:click="backToMenuClicked" type="button" class="btn btn-danger btn-block"><i class="fas fa-arrow-left"></i> Back to Menu</button>
