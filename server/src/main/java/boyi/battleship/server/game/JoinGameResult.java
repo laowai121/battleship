@@ -12,12 +12,17 @@ public class JoinGameResult {
     private String playerToken;
 
     @NotNull
+    private String gameKey;
+
+    @NotNull
     private String errorMessage;
 
-    public JoinGameResult(boolean success, @NotNull String errorMessage, @Nullable String playerToken) {
+    public JoinGameResult(boolean success, @NotNull String errorMessage,
+                          @Nullable String playerToken, @NotNull String gameKey) {
         this.success = success;
         this.playerToken = playerToken;
         this.errorMessage = errorMessage;
+        this.gameKey = gameKey;
     }
 
     public boolean isSuccess() {
@@ -28,6 +33,12 @@ public class JoinGameResult {
         return Optional.ofNullable(playerToken);
     }
 
+    @NotNull
+    public String getGameKey() {
+        return gameKey;
+    }
+
+    @NotNull
     public String getErrorMessage() {
         return errorMessage;
     }

@@ -91,42 +91,54 @@
             var validationStatus = validatePlayerName(playerName);
 
             if (validationStatus.valid) {
-                removeErrorMessage(createGamePlayerName, createGameErrorContainer);
+                removeValidationError(createGamePlayerName, createGameErrorContainer);
                 createGame(playerName, joinAsSpectator);
             } else {
-                displayErrorMessage(createGamePlayerName, createGameErrorContainer, validationStatus.message);
+                displayValidationError(createGamePlayerName, createGameErrorContainer, validationStatus.message);
             }
         }
 
         function createGame(playerName, joinAsSpectator) {
             menuFormController.startLoading();
-            battleshipApi.createAndJoinGame(playerName, joinAsSpectator, function (result) {
-                openGame(result.playerToken);
-            }, function (result) {
+            battleshipApi.createAndJoinGame(playerName, joinAsSpectator, function (playerToken, gameKey) {
+                openGame(playerToken, gameKey);
+            }, function (errorMessage) {
                 menuFormController.stopLoading();
-                displayErrorMessage(createGameErrorContainer, result.errorMessage);
+                displayErrorMessage(createGameErrorContainer, errorMessage);
             });
         }
 
-        function openGame(playerToken) {
-            battleshipGame.loadGame(playerToken);
+        function joinGame(playerName, gameKey, joinAsSpectator) {
+            menuFormController.startLoading();
+            battleshipApi.joinGame(playerName, gameKey, joinAsSpectator, function (playerToken, gamekey) {
+                openGame(playerToken, gameKey);
+            }, function (errorMessage) {
+                menuFormController.stopLoading();
+                displayErrorMessage(joinGameErrorContainer, errorMessage);
+            });
+        }
+
+        function openGame(playerToken, gameKey) {
+            battleshipGame.loadGame(playerToken, gameKey);
         }
 
         function joinGameButtonClicked(joinAsSpectator) {
             var playerName = joinGamePlayerName.val().trim().replace(/\s\s+/g, ' ');
             // var gameId = joinGameGameId.val().trim();
-            var gameKey = joinGameGameKey.val().trim();
+            var gameKey = joinGameGameKey.val().trim().toLowerCase();
 
             var i;
 
             var validationStatusArr = [
                 { status: validatePlayerName(playerName), element: joinGamePlayerName },
                 // { status: validateGameId(playerName), element: joinGameGameId },
-                { status: validateGameKey(playerName), element: joinGameGameKey }
+                { status: validateGameKey(gameKey), element: joinGameGameKey }
             ];
 
             var validation;
             var inputValid = true;
+
+            removeValidationError(joinGamePlayerName.add(joinGameGameKey).add(joinGameErrorContainer), joinGameErrorContainer);
 
             for (i = 0; i < validationStatusArr.length; i++) {
                 validation = validationStatusArr[i];
@@ -139,10 +151,9 @@
             if (inputValid) {
                 // removeErrorMessage(joinGamePlayerName.add(joinGameGameId).add(joinGameGameKey).add(joinGameErrorContainer));
                 // joinGame(playerName, gameId, gameKey, joinAsSpectator);
-                removeErrorMessage(joinGamePlayerName.add(joinGameGameKey).add(joinGameErrorContainer));
                 joinGame(playerName, gameKey, joinAsSpectator);
             } else {
-                displayErrorMessage(validation.element, joinGameErrorContainer, validation.status.message);
+                displayValidationError(validation.element, joinGameErrorContainer, validation.status.message);
             }
         }
 
@@ -183,6 +194,23 @@
             return result;
         }
 
+        function validateGameKey(gameKey) {
+            var result = {
+                valid: false,
+                message: ''
+            };
+
+            if (gameKey.length < 1) {
+                result.message = 'Please, enter game key and try again';
+            } else if (gameKey.length != 16 || !/^[a-f0-9]+$/.test(gameKey)) {
+                result.message = 'Invalid Game Key. Game Key should be a sequence of lower case alphanumerics of length 16'
+            } else {
+                result.valid = true;
+            }
+
+            return result;
+        }
+
         function initVariables() {
             gameMenuContainer = $('#game-menu-container');
             createGameMenuButton = $('#create-game-menu-button');
@@ -214,6 +242,14 @@
             createGameAsSpectatorButton.bind('click', function () {
                 createGameButtonClicked(true);
             });
+
+            joinGameButton.bind('click', function () {
+                joinGameButtonClicked(false);
+            });
+
+            joinGameAsSpectatorButton.bind('click', function () {
+                joinGameButtonClicked(true);
+            });
         }
 
         function init() {
@@ -232,10 +268,11 @@
 
         var self = this;
 
-        this.loadGame = function (playerToken) {
+        this.loadGame = function (playerToken, gameKey) {
             self.gameMenu.hide();
 
-
+            gameContainer.html('<h3>Connected. Player Token: ' + playerToken
+                + ', Game Key: ' + gameKey + '</h3>');
 
             gameContainer.show();
         };

@@ -21,12 +21,12 @@ public class GameManager {
             GameState gameState = game.getState();
 
             if (!joinAsSpectator && !gameState.isAwaitingPlayers()) {
-                return new JoinGameResult(false, "The game has already started", null);
+                return new JoinGameResult(false, "The game has already started", null, game.getKey());
             }
 
             String playerToken = joinGame(game, playerName, joinAsSpectator);
 
-            return new JoinGameResult(true, "", playerToken);
+            return new JoinGameResult(true, "", playerToken, game.getKey());
         }
     }
 
@@ -38,7 +38,7 @@ public class GameManager {
             gameStore.register(game);
             String playerToken = joinGame(game, playerName, joinAsSpectator);
 
-            return new JoinGameResult(true, "", playerToken);
+            return new JoinGameResult(true, "", playerToken, game.getKey());
         }
     }
 

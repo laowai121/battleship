@@ -15,7 +15,7 @@ public class GameKeyValidator {
         if (gameKey.length() != KeyGenerator.KEY_LENGTH
                 || gameKey.chars().mapToObj((n) -> (char) n).anyMatch((n) -> KeyGenerator.KEY_CHARS.indexOf(n) < 0)) {
             return new ValidationResult(false,
-                    "Invalid Game Key. Game Key should be a sequence of lower case alphanumerics of length " + KeyGenerator.KEY_LENGTH);
+                    "Invalid Game Key. Game Key should be a sequence of hexadecimal digits " + KeyGenerator.KEY_LENGTH);
         }
 
         return new ValidationResult(true, "Game Key is valid");

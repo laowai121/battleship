@@ -1,5 +1,6 @@
 .main-menu-container {
-    padding: 20px 35px 40px 35px
+    padding: 20px 35px 40px 35px;
+    width: 350px;
 }
 
 .create-game-menu-container {

@@ -21,7 +21,7 @@ public class GameKeyValidatorTest {
 
     private static ValidationResult testEmpty, testWhitespace, testInvalidCharacters, testTooShort;
     private static ValidationResult testTooLong, testUppercaseCharacter, testExtraSpace, testChineseCharacters;
-    private static ValidationResult testRussianLetter, testValid1, testValid2, testValid3;
+    private static ValidationResult testRussianLetter, testNonHexDigit, testValid1, testValid2, testValid3;
 
     private boolean setupComplete = false;
 
@@ -37,6 +37,7 @@ public class GameKeyValidatorTest {
             testExtraSpace = gameKeyValidator.validate("az5cd7bdnu66e4fv  ");
             testRussianLetter = gameKeyValidator.validate("az5cd7bdnu66Ы4fv");
             testChineseCharacters = gameKeyValidator.validate("哇哈哈哈哈");
+            testNonHexDigit = gameKeyValidator.validate("aa5cb7bd4u66e4f5");
             testValid1 = gameKeyValidator.validate("aa5cb7bd4d66e4f5");
             testValid2 = gameKeyValidator.validate("1111111111111111");
             testValid3 = gameKeyValidator.validate("ffffffffffffffff");
@@ -103,6 +104,12 @@ public class GameKeyValidatorTest {
     public void testChineseCharacters() {
         assertThat(testChineseCharacters.isValid()).isEqualTo(false);
         assertThat(testChineseCharacters.getMessage()).isEqualTo(ERROR_INVALID_KEY);
+    }
+
+    @Test
+    public void testNonHexDigit() {
+        assertThat(testNonHexDigit.isValid()).isEqualTo(true);
+        assertThat(testNonHexDigit.getMessage()).isEqualTo(VALID_KEY);
     }
 
     @Test

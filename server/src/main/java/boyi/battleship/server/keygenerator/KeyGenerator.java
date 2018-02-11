@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 @Service("keyGenerator")
 public class KeyGenerator {
     public static final int KEY_LENGTH = 16;
-    public static final String KEY_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
+    public static final String KEY_CHARS = "0123456789abcdef";
 
     private static final int KEY_CHARS_LENGTH = KEY_CHARS.length();
 

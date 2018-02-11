@@ -2,35 +2,34 @@ package boyi.battleship.server.response;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BattleshipResponse {
     private boolean success;
 
     @NotNull
-    private String message;
-
-    public BattleshipResponse(boolean success, @NotNull String message) {
-        this.success = success;
-        this.message = message;
-    }
+    private Map<String, Object> data;
 
     public BattleshipResponse(boolean success) {
-        this(success, success ? "OK" : "Unknown Error");
+        this.success = success;
+        this.data = new HashMap<>();
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public Map<String, Object> getData() {
+        return data;
     }
 
-    @NotNull
-    public String getMessage() {
-        return message;
+    public Object getProperty(String property) {
+        return data.get(property);
     }
 
-    public void setMessage(@NotNull String message) {
-        this.message = message;
+    public BattleshipResponse setProperty(String property, Object value) {
+        data.put(property, value);
+        return this;
     }
 }

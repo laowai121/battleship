@@ -21,7 +21,7 @@ public abstract class Store<T extends BattleshipObject> {
     }
 
     public Optional<T> get(@NotNull String key) {
-        return Optional.ofNullable(store.get(key));
+        return Optional.ofNullable(store.get(key.toLowerCase()));
     }
 
     @NotNull
