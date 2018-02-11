@@ -235,6 +235,18 @@
             joinGameMenuButton.bind('click', menuFormController.openJoinGameMenu);
             backToMainMenuButtons.bind('click', menuFormController.backToMainMenu);
 
+            createGamePlayerName.bind('keydown', function (e) {
+                if (e.keyCode == 13) {
+                    createGameButtonClicked(false);
+                }
+            });
+
+            joinGamePlayerName.add(joinGameGameKey).bind('keydown', function (e) {
+                if (e.keyCode == 13) {
+                    joinGameButtonClicked(false);
+                }
+            });
+
             createGameButton.bind('click', function () {
                 createGameButtonClicked(false);
             });
