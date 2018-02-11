@@ -1,15 +1,25 @@
-.create-join-game-container {
+.main-menu-container {
     padding: 20px 35px 40px 35px
 }
 
-.create-new-game-container {
+.create-game-menu-container {
     padding: 45px 40px;
-    min-width: 440px;
+    width: 440px;
 }
 
-.join-existing-game-container {
+.join-game-menu-container {
     padding: 45px 40px;
-    min-width: 440px;
+    width: 440px;
+}
+
+.validation-error {
+    border: 1px solid red;
+    color: red;
+}
+
+.validation-error-container {
+    margin-bottom: 15px;
+    color: #bd2727;
 }
 
 .battleship-container {

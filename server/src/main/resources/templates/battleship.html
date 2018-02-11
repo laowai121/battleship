@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=UA-113519000-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-113519000-1');
+    </script>
+
+    <title>Battleship Game</title>
+
+    <link th:href="@{css/bootstrap.min.css}" href="../static/css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{css/battleship.css}" href="../static/css/battleship.css" rel="stylesheet" />
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet" />
+
+    <script th:src="@{js/battleship-api.js}" src="../static/js/battleship-api.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+    <div class="container" style="display: flex; height: 100vh;">
+        <div id="game-menu-container" class="battleship-container">
+            <div id="loading-spinner" style="display: none;" class="spinner-wrapper">
+                <i class="spinner fas fa-spinner fa-spin"></i>
+            </div>
+
+            <div class="menu-container main-menu-container" data-menu-form="main">
+                <h1>Battleship Game</h1>
+                <div class="row" style="margin-top: 21px;">
+                    <div class="col-md-12">
+                        <button id="create-game-menu-button" type="button" class="menu-input btn btn-primary btn-block">Create New Game</button>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 5px;">
+                    <div class="col-md-12">
+                        <button id="join-game-menu-button" type="button" class="menu-input btn btn-warning btn-block">Join Existing Game</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-container create-game-menu-container" style="display: none;" data-menu-form="createGame">
+                <div class="row" style="margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label class="col-md-2" for="create-game-player-name">Player</label>
+                        <div class="col-md-10">
+                            <input type="text" class="menu-input form-control input-with-validation"
+                                   id="create-game-player-name" placeholder="Enter Player Name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="validation-error-container" id="create-game-error-container">
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id="create-game-button" type="button" class="menu-input btn btn-primary btn-block">Create Game</button>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 4px;">
+                    <div class="col-md-12">
+                        <button id="create-game-as-spectator-button" type="button" class="menu-input btn btn-warning btn-block">Create Game as Spectator</button>
+                    </div>
+                </div>
+                <hr style="border: 1px solid #579596; box-shadow: 0 0 30px #345d69; margin: 12px 0;" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="menu-input back-to-main-menu-button btn btn-danger btn-block"><i class="fas fa-arrow-left"></i> Back to Main Menu</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-container join-game-menu-container" style="display: none;" data-menu-form="joinGame">
+                <div class="row" style="margin-bottom: 4px;">
+                    <div class="form-group">
+                        <label class="col-md-2" for="join-game-player-name">Player</label>
+                        <div class="col-md-10">
+                            <input type="text" class="menu-input input-with-validation form-control" id="join-game-player-name" placeholder="Enter Player Name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="validation-error-container" id="join-game-error-container"></div>
+                <!--<div class="row" style="margin-bottom: 4px;">-->
+                    <!--<div class="form-group">-->
+                        <!--<label class="col-md-2" for="join-game-game-id">Id</label>-->
+                        <!--<div class="col-md-10">-->
+                            <!--<input type="text" class="menu-input input-with-validation form-control" id="join-game-game-id" placeholder="Enter Game Id" />-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div class="row" style="margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label class="col-md-2" for="join-game-game-key">Key</label>
+                        <div class="col-md-10">
+                            <input type="text" class="menu-input input-with-validation form-control" id="join-game-game-key" placeholder="Enter Game Key" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id="join-game-button" type="button" class="menu-input btn btn-primary btn-block">Join Game</button>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 4px;">
+                    <div class="col-md-12">
+                        <button id="join-game-as-spectator-button" type="button" class="menu-input btn btn-warning btn-block">Join Game as Spectator</button>
+                    </div>
+                </div>
+                <hr style="border: 1px solid #579596; box-shadow: 0 0 30px #345d69; margin: 12px 0px;" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="menu-input back-to-main-menu-button btn btn-danger btn-block"><i class="fas fa-arrow-left"></i> Back to Main Menu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="game-container" style="display: none;">
+            CONNECTED
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <script th:src="@{js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
+
+    <script th:src="@{js/game-menu.js}" src="../static/js/game-menu.js"></script>
+</body>
+</html>
