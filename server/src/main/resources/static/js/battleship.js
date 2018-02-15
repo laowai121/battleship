@@ -78,7 +78,7 @@
         var createGameButton, createGameAsSpectatorButton;
         var createGamePlayerName, createGameErrorContainer, maxSpectatorsSelect;
         var joinGameButton, joinGameAsSpectatorButton;
-        var joinGamePlayerName, /*joinGameGameId,*/ joinGameGameKey, joinGameErrorContainer;
+        var joinGamePlayerName, joinGameGameKey, joinGameErrorContainer;
 
         var that = this;
 
@@ -125,14 +125,12 @@
 
         function joinGameButtonClicked(joinAsSpectator) {
             var playerName = joinGamePlayerName.val().trim().replace(/\s\s+/g, ' ');
-            // var gameId = joinGameGameId.val().trim();
             var gameKey = joinGameGameKey.val().trim().toLowerCase();
 
             var i;
 
             var validationStatusArr = [
                 { status: validatePlayerName(playerName), element: joinGamePlayerName },
-                // { status: validateGameId(playerName), element: joinGameGameId },
                 { status: validateGameKey(gameKey), element: joinGameGameKey }
             ];
 
@@ -150,8 +148,6 @@
             }
 
             if (inputValid) {
-                // removeErrorMessage(joinGamePlayerName.add(joinGameGameId).add(joinGameGameKey).add(joinGameErrorContainer));
-                // joinGame(playerName, gameId, gameKey, joinAsSpectator);
                 joinGame(playerName, gameKey, joinAsSpectator);
             } else {
                 displayValidationError(validation.element, joinGameErrorContainer, validation.status.message);
@@ -224,7 +220,6 @@
             joinGameButton = $('#join-game-button');
             joinGameAsSpectatorButton = $('#join-game-as-spectator-button');
             joinGamePlayerName = $('#join-game-player-name');
-            // joinGameGameId = $('#join-game-game-id');
             joinGameGameKey = $('#join-game-game-key');
             joinGameErrorContainer = $('#join-game-error-container');
             maxSpectatorsSelect = $('#max-spectators-select');
@@ -284,10 +279,6 @@
 
         this.loadGame = function (playerToken, gameKey) {
             that.gameMenu.hide();
-
-            // gameContainer.html('<h3>Connected. Player Token: ' + playerToken
-            //     + ', Game Key: ' + gameKey + '</h3>');
-
             gameContainer.show();
         };
 
