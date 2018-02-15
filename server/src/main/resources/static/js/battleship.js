@@ -14,7 +14,7 @@
 
             init();
 
-            var self = this;
+            var that = this;
 
             this.openCreateGameMenu = function () {
                 displayedMenuForm = MENU_FORM.CREATE_GAME;
@@ -28,7 +28,7 @@
 
             this.backToMainMenu = function () {
                 resetFormInputs();
-                self.hideValidationErrors();
+                that.hideValidationErrors();
                 displayedMenuForm = MENU_FORM.MAIN;
                 refresh();
             };
@@ -76,11 +76,11 @@
         var gameMenuContainer;
         var createGameMenuButton, joinGameMenuButton, backToMainMenuButtons;
         var createGameButton, createGameAsSpectatorButton;
-        var createGamePlayerName, createGameErrorContainer;
+        var createGamePlayerName, createGameErrorContainer, maxSpectatorsSelect;
         var joinGameButton, joinGameAsSpectatorButton;
         var joinGamePlayerName, /*joinGameGameId,*/ joinGameGameKey, joinGameErrorContainer;
 
-        var self = this;
+        var that = this;
 
         this.hide = function () {
             gameMenuContainer.hide();
@@ -88,19 +88,20 @@
 
         function createGameButtonClicked(joinAsSpectator) {
             var playerName = createGamePlayerName.val().trim().replace(/\s\s+/g, ' ');
+            var maxSpectators = parseInt(maxSpectatorsSelect.val());
             var validationStatus = validatePlayerName(playerName);
 
             if (validationStatus.valid) {
                 removeValidationError(createGamePlayerName, createGameErrorContainer);
-                createGame(playerName, joinAsSpectator);
+                createGame(playerName, maxSpectators, joinAsSpectator);
             } else {
                 displayValidationError(createGamePlayerName, createGameErrorContainer, validationStatus.message);
             }
         }
 
-        function createGame(playerName, joinAsSpectator) {
+        function createGame(playerName, maxSpectators, joinAsSpectator) {
             menuFormController.startLoading();
-            battleshipApi.createAndJoinGame(playerName, joinAsSpectator, function (playerToken, gameKey) {
+            battleshipApi.createGame(playerName, maxSpectators, joinAsSpectator, function (playerToken, gameKey) {
                 openGame(playerToken, gameKey);
             }, function (errorMessage) {
                 menuFormController.stopLoading();
@@ -226,6 +227,7 @@
             // joinGameGameId = $('#join-game-game-id');
             joinGameGameKey = $('#join-game-game-key');
             joinGameErrorContainer = $('#join-game-error-container');
+            maxSpectatorsSelect = $('#max-spectators-select');
 
             menuFormController = new MenuFormController(gameMenuContainer);
         }
@@ -267,7 +269,7 @@
         function init() {
             initVariables();
             addEventListeners();
-            battleshipGame.gameMenu = self;
+            battleshipGame.gameMenu = that;
         }
 
         init();
@@ -278,13 +280,13 @@
 
         this.gameMenu = null;
 
-        var self = this;
+        var that = this;
 
         this.loadGame = function (playerToken, gameKey) {
-            self.gameMenu.hide();
+            that.gameMenu.hide();
 
-            gameContainer.html('<h3>Connected. Player Token: ' + playerToken
-                + ', Game Key: ' + gameKey + '</h3>');
+            // gameContainer.html('<h3>Connected. Player Token: ' + playerToken
+            //     + ', Game Key: ' + gameKey + '</h3>');
 
             gameContainer.show();
         };

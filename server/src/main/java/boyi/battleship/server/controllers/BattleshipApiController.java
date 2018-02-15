@@ -6,8 +6,7 @@ import boyi.battleship.server.game.JoinGameResult;
 import boyi.battleship.server.response.BattleshipResponse;
 import boyi.battleship.server.response.ResponseBuilder;
 import boyi.battleship.server.store.GameStore;
-import boyi.battleship.server.validators.GameKeyValidator;
-import boyi.battleship.server.validators.PlayerNameValidator;
+import boyi.battleship.server.validators.RequestValidator;
 import boyi.battleship.server.validators.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +19,7 @@ import java.util.Optional;
 @RequestMapping("/battleship")
 public class BattleshipApiController {
     @Autowired
-    private PlayerNameValidator playerNameValidator;
-
-    @Autowired
-    private GameKeyValidator gameKeyValidator;
+    private RequestValidator requestValidator;
 
     @Autowired
     private GameStore gameStore;
@@ -34,17 +30,19 @@ public class BattleshipApiController {
     @Autowired
     private ResponseBuilder responseBuilder;
 
-    @RequestMapping("/createAndJoin")
-    private BattleshipResponse createAndJoin(
+    @RequestMapping("/create")
+    private BattleshipResponse create(
             @RequestParam(name = "playerName") String playerName,
+            @RequestParam(name = "maxSpectators") int maxSpectators,
             @RequestParam(name = "joinAsSpectator", required = false, defaultValue = "false") boolean joinAsSpectator) {
-        ValidationResult validationResult = playerNameValidator.validate(playerName);
+        ValidationResult validationResult = requestValidator.validateCreateGameRequest(
+                playerName, maxSpectators, joinAsSpectator);
 
         if (!validationResult.isValid()) {
-            return responseBuilder.buildErrorResponse("Unable to create the game. Invalid player name: " + validationResult.getMessage());
+            return responseBuilder.buildErrorResponse("Unable to create the game: " + validationResult.getMessage());
         }
 
-        JoinGameResult joinGameResult = gameManager.createAndJoinGame(playerName, joinAsSpectator);
+        JoinGameResult joinGameResult = gameManager.createAndJoinGame(playerName, maxSpectators, joinAsSpectator);
         Optional<String> playerToken = joinGameResult.getPlayerToken();
 
         if (!joinGameResult.isSuccess() || !playerToken.isPresent()) {
@@ -59,25 +57,22 @@ public class BattleshipApiController {
             @RequestParam(name = "playerName") String playerName,
             @RequestParam(name = "gameKey") String gameKey,
             @RequestParam(name = "joinAsSpectator", required = false, defaultValue = "false") boolean joinAsSpectator) {
-        ValidationResult validationResult = playerNameValidator.validate(playerName);
-        if (!validationResult.isValid()) {
-            return responseBuilder.buildErrorResponse("Unable to join the game. Invalid player name: " + validationResult.getMessage());
-        }
-
         gameKey = gameKey.toLowerCase();
 
-        validationResult = gameKeyValidator.validate(gameKey);
+        ValidationResult validationResult = requestValidator.validateJoinGameRequest(playerName, gameKey);
+
         if (!validationResult.isValid()) {
-            return responseBuilder.buildErrorResponse("Unable to join the game. Invalid game key: " + validationResult.getMessage());
+            return responseBuilder.buildErrorResponse("Unable to join the game: " + validationResult.getMessage());
         }
 
         Optional<Game> game = gameStore.get(gameKey);
         if (!game.isPresent()) {
-            return responseBuilder.buildErrorResponse("Unable to join the game. Game associated with the provided key doesn't exist");
+            return responseBuilder.buildErrorResponse("Unable to join the game: game associated with the provided key doesn't exist");
         }
 
         JoinGameResult joinGameResult = gameManager.tryJoinPlayer(game.get(), playerName, joinAsSpectator);
         Optional<String> playerToken = joinGameResult.getPlayerToken();
+
         if (!joinGameResult.isSuccess() || !playerToken.isPresent()) {
             return responseBuilder.buildErrorResponse("Unable to join the game: " + joinGameResult.getErrorMessage());
         }

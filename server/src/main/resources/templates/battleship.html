@@ -54,10 +54,21 @@
             <div class="menu-container create-game-menu-container" style="display: none;" data-menu-form="createGame">
                 <div class="row" style="margin-bottom: 16px;">
                     <div class="form-group">
-                        <label class="col-md-2" for="create-game-player-name">Player</label>
-                        <div class="col-md-10">
+                        <label class="col-md-3" for="create-game-player-name">Player</label>
+                        <div class="col-md-9">
                             <input type="text" class="menu-input form-control input-with-validation"
                                    id="create-game-player-name" placeholder="Enter Player Name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label class="col-md-3" for="create-game-player-name">Max Spectators</label>
+                        <div class="col-md-9">
+                            <select class="menu-input form-control" id="max-spectators-select">
+                                <option th:each="i : ${#numbers.sequence(0, 16)}" th:value="${i}" th:text="${i}"></option>
+                                <option selected="selected" value="-1">Unlimited</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -125,8 +136,34 @@
                 </div>
             </div>
         </div>
-        <div id="game-container" style="display: none; width: 100%; background-color: #519e97; margin: 0 auto; text-align: center;">
+        <div id="game-container">
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="col-md-6" id="game-key-container">Game Key: <span></span></div>
+                        <div class="col-md-6" id="game-state-container"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
 
+                        </div>
+                        <div class="col-md-6">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div id="chat-history-container" class="col-md-12"></div>
+                    </div>
+                    <div class="row">
+                        <div id="chat-input-container" class="col-md-12"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

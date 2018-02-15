@@ -8,8 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game extends BattleshipObject {
+    public static final int UNLIMITED_SPECTATORS = -1;
+    public static final int SPECTATORS_MAX = 16;
+
     private Player playerA;
     private Player playerB;
+
+    private int maxSpectators;
 
     @NotNull
     private List<Player> spectators;
@@ -18,6 +23,7 @@ public class Game extends BattleshipObject {
     private GameState state;
 
     public Game() {
+        maxSpectators = UNLIMITED_SPECTATORS;
         spectators = new ArrayList<>();
         state = GameState.AWAITING_A;
     }
@@ -36,9 +42,21 @@ public class Game extends BattleshipObject {
         updateGameState();
     }
 
+    public boolean canAcceptMoreSpectators() {
+        return maxSpectators == UNLIMITED_SPECTATORS || spectators.size() < maxSpectators;
+    }
+
     @NotNull
     public GameState getState() {
         return state;
+    }
+
+    public int getMaxSpectators() {
+        return maxSpectators;
+    }
+
+    public void setMaxSpectators(int maxSpectators) {
+        this.maxSpectators = maxSpectators;
     }
 
     private void updateGameState() {

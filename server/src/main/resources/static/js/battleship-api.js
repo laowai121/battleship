@@ -1,7 +1,7 @@
 var battleshipApi = {
-    createAndJoinGame: function (playerName, joinAsSpectator, success, error) {
+    createGame: function (playerName, maxSpectators, joinAsSpectator, success, error) {
         $.ajax({
-            url: '/battleship/createAndJoin?playerName=' + encodeURIComponent(playerName) + '&joinAsSpectator=' + joinAsSpectator,
+            url: '/battleship/create?playerName=' + encodeURIComponent(playerName) + '&maxSpectators=' + maxSpectators + '&joinAsSpectator=' + joinAsSpectator,
             type: 'POST',
             success: function (result) {
                 if (result.success) {

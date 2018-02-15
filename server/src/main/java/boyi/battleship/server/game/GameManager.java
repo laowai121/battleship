@@ -20,7 +20,11 @@ public class GameManager {
         synchronized (game) {
             GameState gameState = game.getState();
 
-            if (!joinAsSpectator && !gameState.isAwaitingPlayers()) {
+            if (joinAsSpectator) {
+                if (!game.canAcceptMoreSpectators()) {
+                    return new JoinGameResult(false, "This game doesn't accept any more spectators", null, game.getKey());
+                }
+            } else if (!gameState.isAwaitingPlayers()) {
                 return new JoinGameResult(false, "The game has already started", null, game.getKey());
             }
 
@@ -31,8 +35,10 @@ public class GameManager {
     }
 
     @NotNull
-    public JoinGameResult createAndJoinGame(@NotNull String playerName, @NotNull boolean joinAsSpectator) {
+    public JoinGameResult createAndJoinGame(@NotNull String playerName, int maxSpectators, @NotNull boolean joinAsSpectator) {
         Game game = new Game();
+
+        game.setMaxSpectators(maxSpectators);
 
         synchronized (game) {
             gameStore.register(game);

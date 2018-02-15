@@ -61,3 +61,10 @@ body {
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
     opacity: 0;
 }
+
+#game-container {
+    display: none;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
