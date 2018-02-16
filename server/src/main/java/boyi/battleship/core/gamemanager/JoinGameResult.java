@@ -1,14 +1,11 @@
-package boyi.battleship.server.game;
+package boyi.battleship.core.gamemanager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 public class JoinGameResult {
     private boolean success;
 
-    @Nullable
     private String playerToken;
 
     @NotNull
@@ -18,7 +15,7 @@ public class JoinGameResult {
     private String errorMessage;
 
     public JoinGameResult(boolean success, @NotNull String errorMessage,
-                          @Nullable String playerToken, @NotNull String gameKey) {
+                          String playerToken, @NotNull String gameKey) {
         this.success = success;
         this.playerToken = playerToken;
         this.errorMessage = errorMessage;
@@ -29,8 +26,8 @@ public class JoinGameResult {
         return success;
     }
 
-    public Optional<String> getPlayerToken() {
-        return Optional.ofNullable(playerToken);
+    public String getPlayerToken() {
+        return playerToken;
     }
 
     @NotNull

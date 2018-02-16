@@ -1,6 +1,6 @@
 package boyi.battleship.server.validators;
 
-import boyi.battleship.server.keygenerator.KeyGenerator;
+import boyi.battleship.core.keygenerator.KeyGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 

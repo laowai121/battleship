@@ -1,6 +1,6 @@
-package boyi.battleship.server.store;
+package boyi.battleship.core.store;
 
-import boyi.battleship.server.game.Game;
+import boyi.battleship.core.game.Game;
 import org.springframework.stereotype.Repository;
 
 @Repository("gameStore")

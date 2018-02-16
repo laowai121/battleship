@@ -1,6 +1,6 @@
 package boyi.battleship.server.validators;
 
-import boyi.battleship.server.keygenerator.KeyGenerator;
+import boyi.battleship.core.keygenerator.KeyGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

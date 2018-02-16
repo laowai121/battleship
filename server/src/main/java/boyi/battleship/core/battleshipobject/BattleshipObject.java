@@ -1,4 +1,4 @@
-package boyi.battleship.server.battleshipobject;
+package boyi.battleship.core.battleshipobject;
 
 import org.jetbrains.annotations.NotNull;
 

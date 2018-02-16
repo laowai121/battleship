@@ -1,7 +1,7 @@
-package boyi.battleship.server.store;
+package boyi.battleship.core.store;
 
-import boyi.battleship.server.battleshipobject.BattleshipObject;
-import boyi.battleship.server.keygenerator.KeyGenerator;
+import boyi.battleship.core.battleshipobject.BattleshipObject;
+import boyi.battleship.core.keygenerator.KeyGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 

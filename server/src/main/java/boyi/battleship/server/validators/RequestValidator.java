@@ -1,6 +1,6 @@
 package boyi.battleship.server.validators;
 
-import boyi.battleship.server.game.Game;
+import boyi.battleship.core.game.Game;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
