@@ -62,9 +62,24 @@ body {
     opacity: 0;
 }
 
-#game-container {
+.game-container {
     display: none;
     width: 100%;
     margin: 0 auto;
     text-align: center;
+}
+
+#battleship-app {
+    display: flex;
+    height: 100vh;
+}
+
+hr.menu-divider {
+    border: 1px solid #579596;
+    box-shadow: 0 0 30px #345d69;
+    margin: 12px 0;
+}
+
+[v-cloak] {
+    display: none !important;
 }

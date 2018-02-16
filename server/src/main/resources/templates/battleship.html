@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -31,73 +32,95 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
-    <div class="container" style="display: flex; height: 100vh;">
-        <div id="game-menu-container" class="battleship-container">
-            <div id="loading-spinner" style="display: none;" class="spinner-wrapper">
+    <div id="battleship-app" class="container" v-cloak="v-cloak">
+        <div class="battleship-container" v-if="pageDisplayed == BATTLESHIP_PAGE.MAIN_MENU">
+            <div class="spinner-wrapper" v-show="mainMenu.loading">
                 <i class="spinner fas fa-spinner fa-spin"></i>
             </div>
 
-            <div class="menu-container main-menu-container" data-menu-form="main">
+            <div class="main-menu-container" v-show="mainMenu.formDisplayed == MENU_FORM.MAIN">
                 <h2>Battleship Game</h2>
                 <div class="row" style="margin-top: 21px;">
                     <div class="col-md-12">
-                        <button id="create-game-menu-button" type="button" class="menu-input btn btn-primary btn-block">Create New Game</button>
+                        <button v-on:click="openCreateGameMenu()" v-bind:disabled="mainMenu.loading"
+                                type="button" class="btn btn-primary btn-block">Create New Game</button>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 5px;">
                     <div class="col-md-12">
-                        <button id="join-game-menu-button" type="button" class="menu-input btn btn-warning btn-block">Join Existing Game</button>
+                        <button v-on:click="openJoinGameMenu" v-bind:disabled="mainMenu.loading"
+                                type="button" class="btn btn-warning btn-block">Join Existing Game</button>
                     </div>
                 </div>
             </div>
 
-            <div class="menu-container create-game-menu-container" style="display: none;" data-menu-form="createGame">
+            <div class="create-game-menu-container" v-show="mainMenu.formDisplayed == MENU_FORM.CREATE_GAME">
                 <div class="row" style="margin-bottom: 16px;">
                     <div class="form-group">
                         <label class="col-md-3" for="create-game-player-name">Player</label>
                         <div class="col-md-9">
-                            <input type="text" class="menu-input form-control input-with-validation"
-                                   id="create-game-player-name" placeholder="Enter Player Name" />
+                            <input v-model="mainMenu.createGameForm.playerName.value"
+                                   v-bind:disabled="mainMenu.loading"
+                                   v-bind:class="{ 'validation-error': mainMenu.createGameForm.playerName.invalid }"
+                                   v-on:keydown="createGameTextInputKeyDown"
+                                   type="text" class="form-control" id="create-game-player-name"
+                                   placeholder="Enter Player Name" />
                         </div>
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 16px;">
                     <div class="form-group">
-                        <label class="col-md-3" for="create-game-player-name">Max Spectators</label>
+                        <label class="col-md-3" for="max-spectators-select">Max Spectators</label>
                         <div class="col-md-9">
-                            <select class="menu-input form-control" id="max-spectators-select">
-                                <option th:each="i : ${#numbers.sequence(0, 16)}" th:value="${i}" th:text="${i}"></option>
-                                <option selected="selected" value="-1">Unlimited</option>
+                            <select class="form-control" id="max-spectators-select"
+                                    v-model="mainMenu.createGameForm.maxSpectators.value"
+                                    v-bind:disabled="mainMenu.loading">
+                                <option value="-1">Unlimited</option>
+                                <option v-for="n in 17" v-bind:value="n - 1">{{ n - 1 }}</option>
                             </select>
                         </div>
                     </div>
                 </div>
-                <div class="validation-error-container" id="create-game-error-container">
+                <div class="validation-error-container">
+                    {{ mainMenu.createGameForm.validationError }}
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <button id="create-game-button" type="button" class="menu-input btn btn-primary btn-block">Create Game</button>
+                        <button v-bind:disabled="mainMenu.loading"
+                                v-on:click="createGameButtonClicked"
+                                type="button" class="btn btn-primary btn-block">Create Game</button>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 4px;">
                     <div class="col-md-12">
-                        <button id="create-game-as-spectator-button" type="button" class="menu-input btn btn-warning btn-block">Create Game as Spectator</button>
+                        <button v-bind:disabled="mainMenu.loading"
+                                v-on:click="createGameAsSpectatorButtonClicked"
+                                type="button" class="btn btn-warning btn-block">Create Game as Spectator</button>
                     </div>
                 </div>
-                <hr style="border: 1px solid #579596; box-shadow: 0 0 30px #345d69; margin: 12px 0;" />
+                <hr class="menu-divider" />
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="button" class="menu-input back-to-main-menu-button btn btn-danger btn-block"><i class="fas fa-arrow-left"></i> Back to Main Menu</button>
+                        <button v-bind:disabled="mainMenu.loading"
+                                v-on:click="backToMainMenu"
+                                type="button" class="btn btn-danger btn-block">
+                            <i class="fas fa-arrow-left"></i> Back to Main Menu
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <div class="menu-container join-game-menu-container" style="display: none;" data-menu-form="joinGame">
+            <div class="join-game-menu-container" v-show="mainMenu.formDisplayed == MENU_FORM.JOIN_GAME">
                 <div class="row" style="margin-bottom: 4px;">
                     <div class="form-group">
                         <label class="col-md-2" for="join-game-player-name">Player</label>
                         <div class="col-md-10">
-                            <input type="text" class="menu-input input-with-validation form-control" id="join-game-player-name" placeholder="Enter Player Name" />
+                            <input v-model="mainMenu.joinGameForm.playerName.value"
+                                   v-bind:disabled="mainMenu.loading"
+                                   v-bind:class="{ 'validation-error': mainMenu.joinGameForm.playerName.invalid }"
+                                   v-on:keydown="joinGameTextInputKeyDown"
+                                   type="text" class="form-control" id="join-game-player-name"
+                                   placeholder="Enter Player Name" />
                         </div>
                     </div>
                 </div>
@@ -105,30 +128,45 @@
                     <div class="form-group">
                         <label class="col-md-2" for="join-game-game-key">Key</label>
                         <div class="col-md-10">
-                            <input type="text" class="menu-input input-with-validation form-control" id="join-game-game-key" placeholder="Enter Game Key" />
+                            <input v-model="mainMenu.joinGameForm.gameKey.value"
+                                   v-bind:disabled="mainMenu.loading"
+                                   v-bind:class="{ 'validation-error': mainMenu.joinGameForm.gameKey.invalid }"
+                                   v-on:keydown="joinGameTextInputKeyDown"
+                                   type="text" class="form-control" id="join-game-game-key"
+                                   placeholder="Enter Game Key" />
                         </div>
                     </div>
                 </div>
-                <div class="validation-error-container" id="join-game-error-container"></div>
+                <div class="validation-error-container">
+                    {{ mainMenu.joinGameForm.validationError }}
+                </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <button id="join-game-button" type="button" class="menu-input btn btn-primary btn-block">Join Game</button>
+                        <button v-bind:disabled="mainMenu.loading"
+                                v-on:click="joinGameButtonClicked"
+                                type="button" class="btn btn-primary btn-block">Join Game</button>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 4px;">
                     <div class="col-md-12">
-                        <button id="join-game-as-spectator-button" type="button" class="menu-input btn btn-warning btn-block">Join Game as Spectator</button>
+                        <button v-bind:disabled="mainMenu.loading"
+                                v-on:click="joinGameAsSpectatorButtonClicked"
+                                type="button" class="btn btn-warning btn-block">Join Game as Spectator</button>
                     </div>
                 </div>
-                <hr style="border: 1px solid #579596; box-shadow: 0 0 30px #345d69; margin: 12px 0px;" />
+                <hr class="menu-divider" />
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="button" class="menu-input back-to-main-menu-button btn btn-danger btn-block"><i class="fas fa-arrow-left"></i> Back to Main Menu</button>
+                        <button v-bind:disabled="mainMenu.loading"
+                                v-on:click="backToMainMenu"
+                                type="button" class="btn btn-danger btn-block">
+                            <i class="fas fa-arrow-left"></i> Back to Main Menu
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="game-container">
+        <div class="game-container" v-if="pageDisplayed == BATTLESHIP_PAGE.BATTLESHIP_GAME">
             <div class="row">
                 <div class="col-md-10">
                     <div class="row">

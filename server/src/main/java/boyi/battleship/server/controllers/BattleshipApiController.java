@@ -56,7 +56,7 @@ public class BattleshipApiController {
 
         JoinGameResult joinGameResult = gameManager.createAndJoinGame(playerName, maxSpectators, joinAsSpectator);
 
-        if (joinGameResult.isSuccess()) {
+        if (!joinGameResult.isSuccess()) {
             return responseBuilder.buildErrorResponse("Unable to join the game: " + joinGameResult.getErrorMessage());
         }
 

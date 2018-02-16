@@ -1,302 +1,218 @@
-(function () {
-    function GameMenu(battleshipGame) {
-        var MENU_FORM = {
-            MAIN: 'main',
-            CREATE_GAME: 'createGame',
-            JOIN_GAME: 'joinGame'
-        };
+var BATTLESHIP_PAGE = {
+    MAIN_MENU: 'mainMenu',
+    BATTLESHIP_GAME: 'battleshipGame'
+};
 
-        function MenuFormController(gameMenuContainer) {
-            var menuContainers, inputsWithValidation, validationErrorContainers, loadingSpinner;
-            var allMenuInputs, allMenuTextInputs;
+var MENU_FORM = {
+    MAIN: 'main',
+    CREATE_GAME: 'createGame',
+    JOIN_GAME: 'joinGame'
+};
 
-            var displayedMenuForm = MENU_FORM.MAIN;
+var MAX_SPECTATORS_UNLIMITED = -1;
 
-            init();
+var Validators = {
+    playerNameValidator: {
+        validate: function (playerName) {
+            playerName = playerName.trim().replace(/\s\s+/g, ' ');
 
-            var that = this;
-
-            this.openCreateGameMenu = function () {
-                displayedMenuForm = MENU_FORM.CREATE_GAME;
-                refresh();
-            };
-
-            this.openJoinGameMenu = function () {
-                displayedMenuForm = MENU_FORM.JOIN_GAME;
-                refresh();
-            };
-
-            this.backToMainMenu = function () {
-                resetFormInputs();
-                that.hideValidationErrors();
-                displayedMenuForm = MENU_FORM.MAIN;
-                refresh();
-            };
-
-            this.hideValidationErrors = function () {
-                inputsWithValidation.removeClass('validation-error');
-                validationErrorContainers.html('');
-                validationErrorContainers.hide();
-            };
-
-            this.startLoading = function () {
-                allMenuInputs.attr('disabled', 'disabled');
-                loadingSpinner.show();
-            };
-
-            this.stopLoading = function () {
-                allMenuInputs.removeAttr('disabled');
-                loadingSpinner.hide();
-            };
-
-            function resetFormInputs() {
-                allMenuTextInputs.val('');
-            }
-
-            function refresh() {
-                menuContainers.hide();
-                menuContainers.filter('[data-menu-form="' + displayedMenuForm + '"]').show();
-            }
-
-            function initVariables() {
-                menuContainers = gameMenuContainer.find('.menu-container');
-                inputsWithValidation = gameMenuContainer.find('.input-with-validation');
-                validationErrorContainers = gameMenuContainer.find('.validation-error-container');
-                loadingSpinner = $('#loading-spinner');
-                allMenuInputs = gameMenuContainer.find('.menu-input');
-                allMenuTextInputs = allMenuInputs.filter('[type="text"]');
-            }
-
-            function init() {
-                initVariables();
-            }
-        }
-
-        var menuFormController;
-        var gameMenuContainer;
-        var createGameMenuButton, joinGameMenuButton, backToMainMenuButtons;
-        var createGameButton, createGameAsSpectatorButton;
-        var createGamePlayerName, createGameErrorContainer, maxSpectatorsSelect;
-        var joinGameButton, joinGameAsSpectatorButton;
-        var joinGamePlayerName, joinGameGameKey, joinGameErrorContainer;
-
-        var that = this;
-
-        this.hide = function () {
-            gameMenuContainer.hide();
-        };
-
-        function createGameButtonClicked(joinAsSpectator) {
-            var playerName = createGamePlayerName.val().trim().replace(/\s\s+/g, ' ');
-            var maxSpectators = parseInt(maxSpectatorsSelect.val());
-            var validationStatus = validatePlayerName(playerName);
-
-            if (validationStatus.valid) {
-                removeValidationError(createGamePlayerName, createGameErrorContainer);
-                createGame(playerName, maxSpectators, joinAsSpectator);
-            } else {
-                displayValidationError(createGamePlayerName, createGameErrorContainer, validationStatus.message);
-            }
-        }
-
-        function createGame(playerName, maxSpectators, joinAsSpectator) {
-            menuFormController.startLoading();
-            battleshipApi.createGame(playerName, maxSpectators, joinAsSpectator, function (playerToken, gameKey) {
-                openGame(playerToken, gameKey);
-            }, function (errorMessage) {
-                menuFormController.stopLoading();
-                displayErrorMessage(createGameErrorContainer, errorMessage);
-            });
-        }
-
-        function joinGame(playerName, gameKey, joinAsSpectator) {
-            menuFormController.startLoading();
-            battleshipApi.joinGame(playerName, gameKey, joinAsSpectator, function (playerToken, gamekey) {
-                openGame(playerToken, gameKey);
-            }, function (errorMessage) {
-                menuFormController.stopLoading();
-                displayErrorMessage(joinGameErrorContainer, errorMessage);
-            });
-        }
-
-        function openGame(playerToken, gameKey) {
-            battleshipGame.loadGame(playerToken, gameKey);
-        }
-
-        function joinGameButtonClicked(joinAsSpectator) {
-            var playerName = joinGamePlayerName.val().trim().replace(/\s\s+/g, ' ');
-            var gameKey = joinGameGameKey.val().trim().toLowerCase();
-
-            var i;
-
-            var validationStatusArr = [
-                { status: validatePlayerName(playerName), element: joinGamePlayerName },
-                { status: validateGameKey(gameKey), element: joinGameGameKey }
-            ];
-
-            var validation;
-            var inputValid = true;
-
-            removeValidationError(joinGamePlayerName.add(joinGameGameKey).add(joinGameErrorContainer), joinGameErrorContainer);
-
-            for (i = 0; i < validationStatusArr.length; i++) {
-                validation = validationStatusArr[i];
-                if (!validation.status.valid) {
-                    inputValid = false;
-                    break;
-                }
-            }
-
-            if (inputValid) {
-                joinGame(playerName, gameKey, joinAsSpectator);
-            } else {
-                displayValidationError(validation.element, joinGameErrorContainer, validation.status.message);
-            }
-        }
-
-        function displayValidationError(element, errorMessageContainer, errorMessage) {
-            element.addClass('validation-error');
-            displayErrorMessage(errorMessageContainer, errorMessage);
-        }
-
-        function displayErrorMessage(errorMessageContainer, errorMessage) {
-            errorMessageContainer.html(errorMessage);
-            errorMessageContainer.show();
-        }
-
-        function removeValidationError(element, errorMessageContainer) {
-            element.removeClass('validation-error');
-            removeErrorMessage(errorMessageContainer);
-        }
-
-        function removeErrorMessage(errorMessageContainer) {
-            errorMessageContainer.html('');
-            errorMessageContainer.hide();
-        }
-
-        function validatePlayerName(playerName) {
             var result = {
+                normalized: playerName,
                 valid: false,
-                message: ''
+                error: ''
             };
 
             if (playerName.length < 1) {
-                result.message = 'Please, enter player name and try again';
+                result.error = 'Please, enter player name and try again';
             } else if (playerName.length > 20) {
-                result.message = 'Player name is too long (maximum length: 20). Please, enter valid player name and try again'
+                result.error = 'Player name is too long (maximum length: 20). Please, enter valid player name and try again'
             } else {
                 result.valid = true;
             }
 
             return result;
         }
+    },
+    gameKeyValidator: {
+        validate: function (gameKey) {
+            gameKey = gameKey.trim().toLowerCase();
 
-        function validateGameKey(gameKey) {
             var result = {
+                normalized: gameKey,
                 valid: false,
-                message: ''
+                error: ''
             };
 
             if (gameKey.length < 1) {
-                result.message = 'Please, enter game key and try again';
-            } else if (gameKey.length != 16 || !/^[a-f0-9]+$/.test(gameKey)) {
-                result.message = 'Invalid Game Key. Game Key should be a sequence of lower case alphanumerics of length 16'
+                result.error = 'Please, enter game key and try again';
+            } else if (gameKey.length !== 16 || !/^[a-f0-9]+$/.test(gameKey)) {
+                result.error = 'Invalid Game Key. Game Key should be a sequence of lower case alphanumerics of length 16'
             } else {
                 result.valid = true;
             }
 
             return result;
         }
-
-        function initVariables() {
-            gameMenuContainer = $('#game-menu-container');
-            createGameMenuButton = $('#create-game-menu-button');
-            joinGameMenuButton = $('#join-game-menu-button');
-            backToMainMenuButtons = gameMenuContainer.find('.back-to-main-menu-button');
-            createGameButton = $('#create-game-button');
-            createGameAsSpectatorButton = $('#create-game-as-spectator-button');
-            createGamePlayerName = $('#create-game-player-name');
-            createGameErrorContainer = $('#create-game-error-container');
-            joinGameButton = $('#join-game-button');
-            joinGameAsSpectatorButton = $('#join-game-as-spectator-button');
-            joinGamePlayerName = $('#join-game-player-name');
-            joinGameGameKey = $('#join-game-game-key');
-            joinGameErrorContainer = $('#join-game-error-container');
-            maxSpectatorsSelect = $('#max-spectators-select');
-
-            menuFormController = new MenuFormController(gameMenuContainer);
-        }
-
-        function addEventListeners() {
-            createGameMenuButton.bind('click', menuFormController.openCreateGameMenu);
-            joinGameMenuButton.bind('click', menuFormController.openJoinGameMenu);
-            backToMainMenuButtons.bind('click', menuFormController.backToMainMenu);
-
-            createGamePlayerName.bind('keydown', function (e) {
-                if (e.keyCode == 13) {
-                    createGameButtonClicked(false);
-                }
-            });
-
-            joinGamePlayerName.add(joinGameGameKey).bind('keydown', function (e) {
-                if (e.keyCode == 13) {
-                    joinGameButtonClicked(false);
-                }
-            });
-
-            createGameButton.bind('click', function () {
-                createGameButtonClicked(false);
-            });
-
-            createGameAsSpectatorButton.bind('click', function () {
-                createGameButtonClicked(true);
-            });
-
-            joinGameButton.bind('click', function () {
-                joinGameButtonClicked(false);
-            });
-
-            joinGameAsSpectatorButton.bind('click', function () {
-                joinGameButtonClicked(true);
-            });
-        }
-
-        function init() {
-            initVariables();
-            addEventListeners();
-            battleshipGame.gameMenu = that;
-        }
-
-        init();
     }
+};
 
-    function BattleshipGame() {
-        var gameContainer;
+var battleshipApp = new Vue({
+    el: '#battleship-app',
+    data: {
+        pageDisplayed: BATTLESHIP_PAGE.MAIN_MENU,
 
-        this.gameMenu = null;
-
+        mainMenu: {
+            loading: false,
+            formDisplayed: MENU_FORM.MAIN,
+            createGameForm: {
+                playerName: {
+                    value: '',
+                    invalid: false,
+                    validator: Validators.playerNameValidator
+                },
+                maxSpectators: {
+                    value: MAX_SPECTATORS_UNLIMITED
+                },
+                validationError: ''
+            },
+            joinGameForm: {
+                playerName: {
+                    value: '',
+                    invalid: false,
+                    validator: Validators.playerNameValidator
+                },
+                gameKey: {
+                    value: '',
+                    invalid: false,
+                    validator: Validators.gameKeyValidator
+                },
+                validationError: ''
+            }
+        }
+    },
+    created: function () {
         var that = this;
 
-        this.loadGame = function (playerToken, gameKey) {
-            that.gameMenu.hide();
-            gameContainer.show();
+        this.mainMenuResetAllForms = function () {
+            that.mainMenu.createGameForm.playerName.value = '';
+            that.mainMenu.createGameForm.playerName.invalid = false;
+            that.mainMenu.createGameForm.maxSpectators.value = MAX_SPECTATORS_UNLIMITED;
+            that.mainMenu.joinGameForm.playerName.value = '';
+            that.mainMenu.joinGameForm.playerName.invalid = false;
+            that.mainMenu.joinGameForm.gameKey.value = '';
+            that.mainMenu.joinGameForm.gameKey.invalid = false;
+            that.mainMenu.createGameForm.validationError = '';
+            that.mainMenu.joinGameForm.validationError = '';
         };
 
-        function init() {
-            gameContainer = $('#game-container');
+        this.validateForm = function (form) {
+            var validationError = null;
+
+            Object.getOwnPropertyNames(form).forEach(function (fieldName) {
+                var validation;
+
+                var field = form[fieldName];
+
+                if (field.validator != null) {
+                    validation = field.validator.validate(field.value);
+                    field.value = validation.normalized;
+
+                    if (validationError != null) {
+                        field.invalid = false;
+                    } else {
+                        if (validation.valid) {
+                            field.invalid = false;
+                        } else {
+                            field.invalid = true;
+                            validationError = validation.error;
+                        }
+                    }
+                }
+            });
+
+            form.validationError = validationError == null ? '' : validationError;
+
+            return validationError == null;
+        };
+
+        this.createGame = function (asSpectator) {
+            var formValid = that.validateForm(that.mainMenu.createGameForm);
+
+            if (formValid) {
+                that.mainMenu.loading = true;
+
+                battleshipApi.createGame(
+                    that.mainMenu.createGameForm.playerName.value,
+                    that.mainMenu.createGameForm.maxSpectators.value,
+                    asSpectator,
+                    function (playerToken, gameKey) {
+                        that.mainMenu.loading = false;
+                        alert('Created');
+                        // openGame(playerToken, gameKey);
+                    },
+                    function (errorMessage) {
+                        that.mainMenu.loading = false;
+                        that.mainMenu.createGameForm.validationError = errorMessage;
+                    }
+                );
+            }
+        };
+
+        this.joinGame = function (asSpectator) {
+            var formValid = that.validateForm(that.mainMenu.joinGameForm);
+
+            if (formValid) {
+                that.mainMenu.loading = true;
+
+                battleshipApi.joinGame(
+                    that.mainMenu.joinGameForm.playerName.value,
+                    that.mainMenu.joinGameForm.gameKey.value,
+                    asSpectator,
+                    function (playerToken, gameKey) {
+                        that.mainMenu.loading = false;
+                        alert('Created');
+                        // openGame(playerToken, gameKey);
+                    },
+                    function (errorMessage) {
+                        that.mainMenu.loading = false;
+                        that.mainMenu.joinGameForm.validationError = errorMessage;
+                    }
+                );
+            }
+        };
+    },
+    methods: {
+        openCreateGameMenu: function () {
+            this.mainMenu.formDisplayed = MENU_FORM.CREATE_GAME;
+        },
+        openJoinGameMenu: function () {
+            this.mainMenu.formDisplayed = MENU_FORM.JOIN_GAME;
+        },
+        backToMainMenu: function () {
+            this.mainMenu.formDisplayed = MENU_FORM.MAIN;
+            this.mainMenuResetAllForms();
+        },
+        createGameButtonClicked: function () {
+            this.createGame(false);
+        },
+        createGameAsSpectatorButtonClicked: function () {
+            this.createGame(true);
+        },
+        joinGameButtonClicked: function () {
+            this.joinGame(false);
+        },
+        joinGameAsSpectatorButtonClicked: function () {
+            this.joinGame(true);
+        },
+        createGameTextInputKeyDown: function (e) {
+            if (e.keyCode === 13) {
+                this.createGameButtonClicked();
+            }
+        },
+        joinGameTextInputKeyDown: function (e) {
+            if (e.keyCode === 13) {
+                this.joinGameButtonClicked();
+            }
         }
-
-        init();
     }
-
-    var gameMenu, battleshipGame;
-
-    function init() {
-        battleshipGame = new BattleshipGame();
-        gameMenu = new GameMenu(battleshipGame);
-    }
-
-    $(function () {
-        init();
-    });
-})();
+});
