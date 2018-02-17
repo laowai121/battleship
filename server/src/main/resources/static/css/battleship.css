@@ -177,6 +177,13 @@ hr.menu-divider {
 
 .game-container .game-key-content {
     color: #d49797;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.game-container .game-key-content .game-key {
+    display: inline-block;
+    margin-left: 2px;
 }
 
 .game-container .game-key-content:hover {
