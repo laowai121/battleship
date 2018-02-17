@@ -11,51 +11,6 @@ var MENU_FORM = {
 
 var MAX_SPECTATORS_UNLIMITED = -1;
 
-var Validators = {
-    playerNameValidator: {
-        validate: function (playerName) {
-            playerName = playerName.trim().replace(/\s\s+/g, ' ');
-
-            var result = {
-                normalized: playerName,
-                valid: false,
-                error: ''
-            };
-
-            if (playerName.length < 1) {
-                result.error = 'Please, enter player name and try again';
-            } else if (playerName.length > 20) {
-                result.error = 'Player name is too long (maximum length: 20). Please, enter valid player name and try again'
-            } else {
-                result.valid = true;
-            }
-
-            return result;
-        }
-    },
-    gameKeyValidator: {
-        validate: function (gameKey) {
-            gameKey = gameKey.trim().toLowerCase();
-
-            var result = {
-                normalized: gameKey,
-                valid: false,
-                error: ''
-            };
-
-            if (gameKey.length < 1) {
-                result.error = 'Please, enter game key and try again';
-            } else if (gameKey.length !== 16 || !/^[a-f0-9]+$/.test(gameKey)) {
-                result.error = 'Invalid Game Key. Game Key should be a sequence of lower case alphanumerics of length 16'
-            } else {
-                result.valid = true;
-            }
-
-            return result;
-        }
-    }
-};
-
 var battleshipApp = new Vue({
     el: '#battleship-app',
     data: {
@@ -88,7 +43,10 @@ var battleshipApp = new Vue({
                 },
                 validationError: ''
             }
-        }
+        },
+
+        playerToken: '',
+        gameKey: ''
     },
     created: function () {
         var that = this;
@@ -147,8 +105,7 @@ var battleshipApp = new Vue({
                     asSpectator,
                     function (playerToken, gameKey) {
                         that.mainMenu.loading = false;
-                        alert('Created');
-                        // openGame(playerToken, gameKey);
+                        that.openGame(playerToken, gameKey);
                     },
                     function (errorMessage) {
                         that.mainMenu.loading = false;
@@ -170,8 +127,7 @@ var battleshipApp = new Vue({
                     asSpectator,
                     function (playerToken, gameKey) {
                         that.mainMenu.loading = false;
-                        alert('Created');
-                        // openGame(playerToken, gameKey);
+                        that.openGame(playerToken, gameKey);
                     },
                     function (errorMessage) {
                         that.mainMenu.loading = false;
@@ -180,6 +136,12 @@ var battleshipApp = new Vue({
                 );
             }
         };
+
+        this.openGame = function (playerToken, gameKey) {
+            that.playerToken = playerToken;
+            that.gameKey = gameKey;
+            this.pageDisplayed = BATTLESHIP_PAGE.BATTLESHIP_GAME;
+        }
     },
     methods: {
         openCreateGameMenu: function () {

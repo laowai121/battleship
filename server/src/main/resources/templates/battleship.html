@@ -167,33 +167,36 @@
             </div>
         </div>
         <div class="game-container" v-if="pageDisplayed == BATTLESHIP_PAGE.BATTLESHIP_GAME">
-            <div class="row">
-                <div class="col-md-10">
-                    <div class="row">
-                        <div class="col-md-6" id="game-key-container">Game Key: <span></span></div>
-                        <div class="col-md-6" id="game-state-container"></div>
+            <div class="main-container">
+                <div class="upper-container">
+                    <div class="top-panel">
+                        <div class="top-panel-left">
+                            <div class="inner">Game Key: <span style="color: #d49797;">{{ gameKey }}</span></div>
+                        </div>
+                        <div class="top-panel-right">
+                            <div class="inner">
+                                Loading...
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-
+                    <div class="main-game-container">
+                        <div class="battle-field-container battle-field-left">
+                            <canvas width="300" height="300"></canvas>
                         </div>
-                        <div class="col-md-6">
-
+                        <div class="battle-field-container battle-field-right">
+                            <canvas width="300" height="300"></canvas>
                         </div>
+                        <div class="clearfix"></div>
                     </div>
                 </div>
-                <div class="col-md-2"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="row">
-                        <div id="chat-history-container" class="col-md-12"></div>
-                    </div>
-                    <div class="row">
-                        <div id="chat-input-container" class="col-md-12"></div>
-                    </div>
+                <div class="chat-container">
+                    <div class="chat-history-container"></div>
+                    <div class="chat-input-container"></div>
                 </div>
             </div>
+            <div class="right-panel"></div>
+            <div class="clearfix"></div>
         </div>
     </div>
 
@@ -201,6 +204,7 @@
 
     <script th:src="@{js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
 
+    <script th:src="@{js/validators.js}" src="../static/js/validators.js"></script>
     <script th:src="@{js/battleship.js}" src="../static/js/battleship.js"></script>
 </body>
 </html>
