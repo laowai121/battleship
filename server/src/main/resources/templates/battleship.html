@@ -171,7 +171,9 @@
                 <div class="upper-container">
                     <div class="top-panel">
                         <div class="top-panel-left">
-                            <div class="inner">Game Key: <span style="color: #d49797;">{{ gameKey }}</span></div>
+                            <div class="inner">Game Key:
+                                <span v-on:click="copyGameKey" class="game-key-content">{{ gameKey }}</span>
+                            </div>
                         </div>
                         <div class="top-panel-right">
                             <div class="inner">
@@ -198,7 +200,16 @@
             <div class="right-panel"></div>
             <div class="clearfix"></div>
         </div>
+
+        <vue-toast ref='toast'></vue-toast>
     </div>
+
+    <script th:src="@{js/util.js}" src="../static/js/util.js"></script>
+
+    <link rel="stylesheet" th:href="@{lib/toast/vue-toast.min.css}"
+          href="../static/lib/toast/vue-toast.min.css" charset="utf-8" />
+
+    <script th:src="@{lib/toast/vue-toast.min.js}" src='../static/lib/toast/vue-toast.min.js'></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 

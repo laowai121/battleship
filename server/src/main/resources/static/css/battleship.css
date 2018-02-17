@@ -174,3 +174,12 @@ hr.menu-divider {
 .game-container .chat-input-container {
 
 }
+
+.game-container .game-key-content {
+    color: #d49797;
+}
+
+.game-container .game-key-content:hover {
+    color: #ef5252;
+    cursor: pointer;
+}

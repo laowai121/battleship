@@ -11,6 +11,9 @@ var MENU_FORM = {
 
 var MAX_SPECTATORS_UNLIMITED = -1;
 
+// from https://github.com/AStaroverov/vue-toast
+var VueToast = window.vueToasts ? window.vueToasts.default || window.vueToasts : window.vueToasts;
+
 var battleshipApp = new Vue({
     el: '#battleship-app',
     data: {
@@ -47,6 +50,9 @@ var battleshipApp = new Vue({
 
         playerToken: '',
         gameKey: ''
+    },
+    components: {
+        VueToast: VueToast
     },
     created: function () {
         var that = this;
@@ -140,8 +146,22 @@ var battleshipApp = new Vue({
         this.openGame = function (playerToken, gameKey) {
             that.playerToken = playerToken;
             that.gameKey = gameKey;
-            this.pageDisplayed = BATTLESHIP_PAGE.BATTLESHIP_GAME;
+            that.pageDisplayed = BATTLESHIP_PAGE.BATTLESHIP_GAME;
+        };
+
+        this.showToast = function (message) {
+            this.$refs.toast.showToast(message, {
+                theme: 'success',
+                timeLife: 5000,
+                closeBtn: false
+            });
         }
+    },
+    mounted: function () {
+        this.$refs.toast.setOptions({
+            maxToasts: 6,
+            position: 'bottom right'
+        });
     },
     methods: {
         openCreateGameMenu: function () {
@@ -174,6 +194,11 @@ var battleshipApp = new Vue({
         joinGameTextInputKeyDown: function (e) {
             if (e.keyCode === 13) {
                 this.joinGameButtonClicked();
+            }
+        },
+        copyGameKey: function () {
+            if (copyTextToClipboard(this.gameKey)) {
+                this.showToast('Game Key has been copied to clipboard');
             }
         }
     }
