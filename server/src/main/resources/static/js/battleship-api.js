@@ -1,7 +1,9 @@
+var API_URL_PREFIX = '/api';
+
 var battleshipApi = {
     createGame: function (playerName, maxSpectators, joinAsSpectator, success, error) {
         $.ajax({
-            url: '/battleship/create?playerName=' + encodeURIComponent(playerName) + '&maxSpectators=' + maxSpectators + '&joinAsSpectator=' + joinAsSpectator,
+            url: API_URL_PREFIX + '/create?playerName=' + encodeURIComponent(playerName) + '&maxSpectators=' + maxSpectators + '&joinAsSpectator=' + joinAsSpectator,
             type: 'POST',
             success: function (result) {
                 if (result.success) {
@@ -17,7 +19,7 @@ var battleshipApi = {
     },
     joinGame: function (playerName, gameKey, joinAsSpectator, success, error) {
         $.ajax({
-            url: '/battleship/join?playerName=' + encodeURIComponent(playerName) + '&gameKey='
+            url: API_URL_PREFIX + '/join?playerName=' + encodeURIComponent(playerName) + '&gameKey='
                     + encodeURIComponent(gameKey) + '&joinAsSpectator=' + joinAsSpectator,
             type: 'POST',
             success: function (result) {
@@ -30,6 +32,11 @@ var battleshipApi = {
             error: function (result) {
                 error('Error while joining the game. Check your internet connection');
             }
+        });
+    },
+    subscribeToLiveUpdates: function (playerToken, success, error) {
+        $.ajax({
+            url: API_URL_PREFIX + '/'
         });
     }
 };

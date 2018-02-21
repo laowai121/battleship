@@ -24,6 +24,14 @@ var battleshipApp = new Vue({
             that.playerToken = playerToken;
             that.gameKey = gameKey;
             that.pageDisplayed = BATTLESHIP_PAGE.BATTLESHIP_GAME;
+
+            var socket = new SockJS('/socket');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                stompClient.subscribe('/battleship', function (greeting) {
+                    console.log(greeting);
+                });
+            });
         };
 
         this.showToast = function (message) {

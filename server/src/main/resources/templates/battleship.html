@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -18,7 +18,7 @@
 
     <title>Battleship Game</title>
 
-    <link th:href="@{css/bootstrap.min.css}" href="../static/css/bootstrap.min.css" rel="stylesheet" />
+    <link th:href="@{lib/bootstrap/bootstrap.min.css}" href="../static/lib/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link th:href="@{css/battleship.css}" href="../static/css/battleship.css" rel="stylesheet" />
 
     <!--[if lt IE 9]>
@@ -63,6 +63,7 @@
                         <div class="clearfix"></div>
                     </div>
                 </div>
+                <battleship-chat></battleship-chat>
                 <div class="chat-container">
                     <div class="chat-history-container"></div>
                     <div class="chat-input-container"></div>
@@ -75,6 +76,9 @@
         <vue-toast ref='toast'></vue-toast>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
     <script th:src="@{js/util.js}" src="../static/js/util.js"></script>
 
     <link rel="stylesheet" th:href="@{lib/toast/vue-toast.min.css}"
@@ -84,11 +88,12 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
-    <script th:src="@{js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
+    <script th:src="@{lib/bootstrap/bootstrap.min.js}" src="../static/lib/bootstrap/bootstrap.min.js"></script>
 
     <script th:src="@{js/validators.js}" src="../static/js/validators.js"></script>
 
     <script th:src="@{js/main-menu.js}" src="../static/js/main-menu.js"></script>
+    <script th:src="@{js/battleship-chat.js}" src="../static/js/battleship-chat.js"></script>
     <script th:src="@{js/battleship.js}" src="../static/js/battleship.js"></script>
 </body>
 </html>

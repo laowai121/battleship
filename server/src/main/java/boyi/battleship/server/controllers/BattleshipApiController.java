@@ -17,12 +17,13 @@ import boyi.battleship.server.shipparser.ShipParser;
 import boyi.battleship.server.validators.RequestValidator;
 import boyi.battleship.server.validators.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/battleship")
+@RequestMapping("/api")
 public class BattleshipApiController {
     @Autowired
     private RequestValidator requestValidator;
@@ -41,6 +42,9 @@ public class BattleshipApiController {
 
     @Autowired
     private PlayerSpecificGameStateGenerator playerSpecificGameStateGenerator;
+
+    @Autowired
+    private SimpMessagingTemplate template;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     private BattleshipResponse create(
@@ -86,6 +90,8 @@ public class BattleshipApiController {
         if (!joinGameResult.isSuccess()) {
             return responseBuilder.buildErrorResponse("Unable to join the game: " + joinGameResult.getErrorMessage());
         }
+
+        template.convertAndSend("/battleship", "kotosha");
 
         return responseBuilder.buildJoinGameResponse(joinGameResult.getPlayerToken(), joinGameResult.getGameKey());
     }
