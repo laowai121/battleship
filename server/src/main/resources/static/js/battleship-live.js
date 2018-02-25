@@ -1,13 +1,12 @@
 var battleshipLive = {
     subscribe: function (playerToken) {
+        this.reconnect(playerToken);
+    },
+    reconnect: function (playerToken) {
+        var that = this;
+
         var socket = new SockJS('/socket');
         var stompClient = Stomp.over(socket);
-        // stompClient.debug = null;
-
-        this.reconnect(stompClient, playerToken);
-    },
-    reconnect: function (stompClient, playerToken) {
-        var that = this;
 
         stompClient.connect({}, function () {
             battleshipApi.subscribeToLiveUpdates(stompClient, playerToken, function (update) {
@@ -30,7 +29,7 @@ var battleshipLive = {
             });
         }, function () {
             setTimeout(function () {
-                that.reconnect(stompClient, playerToken);
+                that.reconnect(playerToken);
             }, 1000);
         });
     }
