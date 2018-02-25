@@ -40,5 +40,20 @@ var Validators = {
 
             return result;
         }
+    },
+    chatMessageValidator: {
+        validate: function (chatMessage) {
+            var result = {
+                valid: true,
+                error: ''
+            };
+
+            if (chatMessage.length > 10000) {
+                result.valid = false;
+                result.error = 'Message too long';
+            }
+
+            return result;
+        }
     }
 };

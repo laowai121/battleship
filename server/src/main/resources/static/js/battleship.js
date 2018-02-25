@@ -15,7 +15,8 @@ var battleshipApp = new Vue({
     },
     components: {
         'vue-toast': VueToast,
-        'main-menu': MainMenu
+        'main-menu': MainMenu,
+        'battleship-chat': BattleshipChat
     },
     created: function () {
         var that = this;
@@ -25,18 +26,16 @@ var battleshipApp = new Vue({
             that.gameKey = gameKey;
             that.pageDisplayed = BATTLESHIP_PAGE.BATTLESHIP_GAME;
 
-            var socket = new SockJS('/socket');
-            stompClient = Stomp.over(socket);
-            stompClient.connect({}, function (frame) {
-                stompClient.subscribe('/battleship', function (greeting) {
-                    console.log(greeting);
-                });
+            battleshipLive.subscribe(playerToken);
+
+            battleshipApi.loadChatHistory(playerToken, function (history) {
+                that.$refs.chat.load(history);
             });
         };
 
         this.showToast = function (message) {
             that.$refs.toast.showToast(message, {
-                theme: 'error',
+                theme: 'success',
                 timeLife: 5000,
                 closeBtn: false
             });

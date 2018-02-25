@@ -106,6 +106,23 @@ public class Game extends BattleshipObject {
         this.maxSpectators = maxSpectators;
     }
 
+    public List<Player> getAllPlayersAndSpectators() {
+        List<Player> result = new ArrayList<>();
+
+        if (playerA != null) {
+            result.add(playerA);
+        }
+
+        if (playerB != null) {
+            result.add(playerB);
+        }
+
+
+        result.addAll(spectators);
+
+        return result;
+    }
+
     private void updateGameState() {
         if (playerA == null) {
             state = GameState.AWAITING_A;

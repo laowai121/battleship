@@ -168,11 +168,28 @@ hr.menu-divider {
 }
 
 .game-container .chat-history-container {
-
+    height: calc(100% - 25px);
+    text-align: left;
+    overflow: auto;
 }
 
 .game-container .chat-input-container {
+    height: 25px;
+}
 
+.game-container .chat-input-container .chat-input {
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 25px;
+    float: left;
+    width: calc(100% - 82px);
+}
+
+.game-container .chat-input-container .send-chat-message-btn {
+    float: left;
+    height: 100%;
+    width: 80px;
+    margin-left: 2px;
 }
 
 .game-container .game-key-content {

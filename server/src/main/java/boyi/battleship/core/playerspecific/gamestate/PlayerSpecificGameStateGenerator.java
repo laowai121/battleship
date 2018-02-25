@@ -1,4 +1,4 @@
-package boyi.battleship.server.PlayerSpecificGameState;
+package boyi.battleship.core.playerspecific.gamestate;
 
 import boyi.battleship.core.game.Game;
 import boyi.battleship.core.game.GameState;

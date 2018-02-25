@@ -137,7 +137,6 @@ var MainMenu = {
               '        </div>' +
               '    </div>' +
               '</div>',
-
     data: function () {
         return {
             loading: false,
@@ -168,7 +167,6 @@ var MainMenu = {
             }
         }
     },
-
     created: function () {
         var that = this;
 
@@ -258,7 +256,6 @@ var MainMenu = {
             }
         }
     },
-
     methods: {
         openCreateGameMenu: function () {
             this.formDisplayed = MENU_FORM.CREATE_GAME;

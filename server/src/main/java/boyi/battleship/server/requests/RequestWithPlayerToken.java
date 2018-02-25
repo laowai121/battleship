@@ -6,7 +6,7 @@ public class RequestWithPlayerToken {
     @NotNull
     private String playerToken;
 
-    RequestWithPlayerToken() {
+    public RequestWithPlayerToken() {
         this.playerToken = "";
     }
 

@@ -5,49 +5,45 @@ import boyi.battleship.core.gamemanager.GameManager;
 import boyi.battleship.core.gamemanager.JoinGameResult;
 import boyi.battleship.core.gamemanager.SubmitShipDataResult;
 import boyi.battleship.core.player.Player;
-import boyi.battleship.server.PlayerSpecificGameState.PlayerSpecificGameState;
-import boyi.battleship.server.PlayerSpecificGameState.PlayerSpecificGameStateGenerator;
+import boyi.battleship.core.playerspecific.gamestate.PlayerSpecificGameStateGenerator;
 import boyi.battleship.server.requests.RequestWithPlayerToken;
 import boyi.battleship.server.requests.SubmitShipsRequest;
 import boyi.battleship.server.response.BattleshipResponse;
 import boyi.battleship.server.response.ResponseBuilder;
-import boyi.battleship.core.store.GameStore;
 import boyi.battleship.server.shipparser.ParsedShipData;
 import boyi.battleship.server.shipparser.ShipParser;
 import boyi.battleship.server.validators.RequestValidator;
 import boyi.battleship.server.validators.ValidationResult;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+
+// TODO: probably shouldn't use Player and (especially) Game in this class
 @RestController
-@RequestMapping("/api")
-public class BattleshipApiController {
-    @Autowired
-    private RequestValidator requestValidator;
+@RequestMapping("/game")
+public class GameController {
+    private final RequestValidator requestValidator;
+    private final GameManager gameManager;
+    private final ResponseBuilder responseBuilder;
+    private final ShipParser shipParser;
+    private final PlayerSpecificGameStateGenerator playerSpecificGameStateGenerator;
 
     @Autowired
-    private GameStore gameStore;
-
-    @Autowired
-    private GameManager gameManager;
-
-    @Autowired
-    private ResponseBuilder responseBuilder;
-
-    @Autowired
-    private ShipParser shipParser;
-
-    @Autowired
-    private PlayerSpecificGameStateGenerator playerSpecificGameStateGenerator;
-
-    @Autowired
-    private SimpMessagingTemplate template;
+    public GameController(@NotNull RequestValidator requestValidator, @NotNull GameManager gameManager,
+                          @NotNull ResponseBuilder responseBuilder, @NotNull ShipParser shipParser,
+                          @NotNull PlayerSpecificGameStateGenerator playerSpecificGameStateGenerator) {
+        this.requestValidator = requestValidator;
+        this.gameManager = gameManager;
+        this.responseBuilder = responseBuilder;
+        this.shipParser = shipParser;
+        this.playerSpecificGameStateGenerator = playerSpecificGameStateGenerator;
+    }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    private BattleshipResponse create(
+    private BattleshipResponse createGame(
             @RequestParam(name = "playerName") String playerName,
             @RequestParam(name = "maxSpectators") int maxSpectators,
             @RequestParam(name = "joinAsSpectator", required = false, defaultValue = "false") boolean joinAsSpectator) {
@@ -68,7 +64,7 @@ public class BattleshipApiController {
     }
 
     @RequestMapping(value = "/join", method = RequestMethod.POST)
-    private BattleshipResponse join(
+    private BattleshipResponse joinGame(
             @RequestParam(name = "playerName") String playerName,
             @RequestParam(name = "gameKey") String gameKey,
             @RequestParam(name = "joinAsSpectator", required = false, defaultValue = "false") boolean joinAsSpectator) {
@@ -80,7 +76,7 @@ public class BattleshipApiController {
             return responseBuilder.buildErrorResponse("Unable to join the game: " + validationResult.getMessage());
         }
 
-        Optional<Game> game = gameStore.get(gameKey);
+        Optional<Game> game = gameManager.getGame(gameKey);
         if (!game.isPresent()) {
             return responseBuilder.buildErrorResponse("Unable to join the game: game associated with the provided key doesn't exist");
         }
@@ -91,14 +87,12 @@ public class BattleshipApiController {
             return responseBuilder.buildErrorResponse("Unable to join the game: " + joinGameResult.getErrorMessage());
         }
 
-        template.convertAndSend("/battleship", "kotosha");
-
         return responseBuilder.buildJoinGameResponse(joinGameResult.getPlayerToken(), joinGameResult.getGameKey());
     }
 
     @RequestMapping(value = "/submitShips", method = RequestMethod.POST)
     private BattleshipResponse submitShips(@RequestBody SubmitShipsRequest request) {
-        Optional<Player> player = gameManager.authorize(request);
+        Optional<Player> player = gameManager.authorize(request.getPlayerToken());
         if (!player.isPresent()) {
             return responseBuilder.buildErrorResponse("Invalid player token");
         }
@@ -117,32 +111,24 @@ public class BattleshipApiController {
     }
 
     @RequestMapping(value = "/getState", method = RequestMethod.GET)
-    private BattleshipResponse getState(@RequestBody RequestWithPlayerToken request) {
-        Optional<Player> authorizedPlayer = gameManager.authorize(request);
+    private BattleshipResponse getState(@RequestParam(name = "playerName") String playerToken) {
+        Optional<Player> player = gameManager.authorize(playerToken);
+        if (!player.isPresent()) {
+            return responseBuilder.buildErrorResponse("Invalid player token");
+        }
+
+        return responseBuilder.buildGameStateResponse(gameManager.getGameState(player.get()));
+    }
+
+    @RequestMapping(value = "/getEventHistory", method = RequestMethod.GET)
+    private BattleshipResponse getEventHistory(@RequestParam("playerToken") String playerToken) {
+        Optional<Player> authorizedPlayer = gameManager.authorize(playerToken);
         if (!authorizedPlayer.isPresent()) {
             return responseBuilder.buildErrorResponse("Invalid player token");
         }
 
         Player player = authorizedPlayer.get();
 
-        PlayerSpecificGameState gameState = playerSpecificGameStateGenerator.generate(
-                gameManager.getGameState(player), player
-        );
-
-        return responseBuilder.buildGameStateResponse(gameState);
+        return responseBuilder.buildEventHistoryResponse(gameManager.getEventHistoryFor(player));
     }
-
-//    @RequestMapping("/waitMyTurn")
-//    private BattleshipResponse waitForMyTurn(@RequestBody RequestWithPlayerToken request) {
-//        Optional<Player> authorizedPlayer = gameManager.authorize(request);
-//        if (!authorizedPlayer.isPresent()) {
-//            return responseBuilder.buildErrorResponse("Invalid player token");
-//        }
-//
-//        Player player = authorizedPlayer.get();
-//
-//        GameState gameState = gameManager.waitForPlayerTurn(player);
-//
-//        return responseBuilder.buildGameStateResponse(gameState);
-//    }
 }

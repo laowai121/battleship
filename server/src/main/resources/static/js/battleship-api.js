@@ -1,42 +1,94 @@
-var API_URL_PREFIX = '/api';
+var GAME_API_URL_PREFIX = '/game';
+var CHAT_API_URL_PREFIX = '/chat';
 
 var battleshipApi = {
     createGame: function (playerName, maxSpectators, joinAsSpectator, success, error) {
         $.ajax({
-            url: API_URL_PREFIX + '/create?playerName=' + encodeURIComponent(playerName) + '&maxSpectators=' + maxSpectators + '&joinAsSpectator=' + joinAsSpectator,
+            url: GAME_API_URL_PREFIX + '/create?playerName=' + encodeURIComponent(playerName) + '&maxSpectators=' + maxSpectators + '&joinAsSpectator=' + joinAsSpectator,
             type: 'POST',
             success: function (result) {
-                if (result.success) {
+                if (result.success && success) {
                     success(result.data.playerToken, result.data.gameKey);
-                } else {
-                    error(result.data.errorMessage || 'Error while creating the game. Check your internet connection')
+                } else if (error) {
+                    error(result.data.errorMessage || 'Error while creating the game. Check your internet connection');
                 }
             },
             error: function (result) {
-                error('Error while creating the game. Check your internet connection');
+                if (error) {
+                    error('Error while creating the game. Check your internet connection');
+                }
             }
         });
     },
     joinGame: function (playerName, gameKey, joinAsSpectator, success, error) {
         $.ajax({
-            url: API_URL_PREFIX + '/join?playerName=' + encodeURIComponent(playerName) + '&gameKey='
+            url: GAME_API_URL_PREFIX + '/join?playerName=' + encodeURIComponent(playerName) + '&gameKey='
                     + encodeURIComponent(gameKey) + '&joinAsSpectator=' + joinAsSpectator,
             type: 'POST',
             success: function (result) {
-                if (result.success) {
+                if (result.success && success) {
                     success(result.data.playerToken, result.data.gameKey);
-                } else {
-                    error(result.data.errorMessage || 'Error while joining the game. Check your internet connection')
+                } else if (error) {
+                    error(result.data.errorMessage || 'Error while joining the game. Check your internet connection');
                 }
             },
             error: function (result) {
-                error('Error while joining the game. Check your internet connection');
+                if (error) {
+                    error('Error while joining the game. Check your internet connection');
+                }
             }
         });
     },
-    subscribeToLiveUpdates: function (playerToken, success, error) {
+    subscribeToLiveUpdates: function (stompClient, playerToken, handler) {
+        stompClient.subscribe('/battleship/' + playerToken, function (o) {
+            handler(o);
+        });
+    },
+    subscribeToChatUpdates: function (stompClient, playerToken, handler) {
+        stompClient.subscribe('/chat/' + playerToken, function (o) {
+            handler(o);
+        });
+    },
+    loadChatHistory: function (playerToken, success, error) {
         $.ajax({
-            url: API_URL_PREFIX + '/'
+            url: CHAT_API_URL_PREFIX + '/history?playerToken=' + encodeURIComponent(playerToken),
+            type: 'GET',
+            success: function (result) {
+                if (result.success && success) {
+                    success(result.data.chatHistory);
+                } else if (error) {
+                    error(result.data.errorMessage);
+                }
+            },
+            error: function (result) {
+                if (error) {
+                    error('Error while loading chat history. Check your internet connection');
+                }
+            }
+        });
+    },
+    sendChatMessage: function (playerToken, message, success, error) {
+        $.ajax({
+            url: CHAT_API_URL_PREFIX + '/send',
+            type: 'POST',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+                playerToken: playerToken,
+                message: message
+            }),
+            success: function (result) {
+                if (result.success && success) {
+                    success(result.data.messageSequenceNumber);
+                } else if (error) {
+                    error(result.data.errorMessage);
+                }
+            },
+            error: function (result) {
+                if (error) {
+                    error('Error while sending the message. Check your internet connection');
+                }
+            }
         });
     }
 };

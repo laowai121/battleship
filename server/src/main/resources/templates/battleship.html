@@ -33,8 +33,8 @@
 </head>
 <body>
     <div id="battleship-app" class="container" v-cloak="v-cloak">
-        <main-menu v-if="pageDisplayed == BATTLESHIP_PAGE.MAIN_MENU"></main-menu>
-        <div class="game-container" v-if="pageDisplayed == BATTLESHIP_PAGE.BATTLESHIP_GAME">
+        <main-menu v-show="pageDisplayed == BATTLESHIP_PAGE.MAIN_MENU"></main-menu>
+        <div class="game-container" v-show="pageDisplayed == BATTLESHIP_PAGE.BATTLESHIP_GAME">
             <div class="main-container">
                 <div class="upper-container">
                     <div class="top-panel">
@@ -63,11 +63,7 @@
                         <div class="clearfix"></div>
                     </div>
                 </div>
-                <battleship-chat></battleship-chat>
-                <div class="chat-container">
-                    <div class="chat-history-container"></div>
-                    <div class="chat-input-container"></div>
-                </div>
+                <battleship-chat ref="chat"></battleship-chat>
             </div>
             <div class="right-panel"></div>
             <div class="clearfix"></div>
@@ -80,6 +76,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
     <script th:src="@{js/util.js}" src="../static/js/util.js"></script>
+    <script th:src="@{js/battleship-live.js}" src="../static/js/battleship-live."></script>
 
     <link rel="stylesheet" th:href="@{lib/toast/vue-toast.min.css}"
           href="../static/lib/toast/vue-toast.min.css" charset="utf-8" />

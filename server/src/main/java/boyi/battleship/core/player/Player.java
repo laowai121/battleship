@@ -28,4 +28,9 @@ public class Player extends BattleshipObject {
     public Game getGame() {
         return game;
     }
+
+    @NotNull
+    public String getName() {
+        return name;
+    }
 }

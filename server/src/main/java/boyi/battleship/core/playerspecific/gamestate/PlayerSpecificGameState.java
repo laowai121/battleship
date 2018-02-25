@@ -1,4 +1,4 @@
-package boyi.battleship.server.PlayerSpecificGameState;
+package boyi.battleship.core.playerspecific.gamestate;
 
 public enum PlayerSpecificGameState {
     // objective
