@@ -150,7 +150,7 @@ public class GameManager {
     }
 
     @NotNull
-    public List<PlayerSpecificGameEvent> getEventHistoryFor(@NotNull Player player) {
+    public synchronized List<PlayerSpecificGameEvent> getEventHistoryFor(@NotNull Player player) {
         return gameEventService.getHistoryFor(player);
     }
 
