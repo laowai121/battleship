@@ -28,7 +28,7 @@ public class BattleshipResponse {
         return data.get(property);
     }
 
-    public BattleshipResponse setProperty(String property, Object value) {
+    public BattleshipResponse setProperty(@NotNull String property, @NotNull Object value) {
         data.put(property, value);
         return this;
     }

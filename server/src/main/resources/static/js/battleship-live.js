@@ -1,3 +1,8 @@
+var BATTLESHIP_UPDATE_TYPE = {
+    PLAYER_JOINED: 'PLAYER_JOINED',
+    SPECTATOR_JOINED: 'SPECTATOR_JOINED'
+};
+
 var battleshipLive = {
     subscribe: function (playerToken) {
         this.reconnect(playerToken);
@@ -17,12 +22,16 @@ var battleshipLive = {
                     return;
                 }
 
-                alert(update);
+                if (update.type === BATTLESHIP_UPDATE_TYPE.PLAYER_JOINED) {
+                    battleshipApp.playerJoined(update.properties.playerName)
+                } else if (update.type === BATTLESHIP_UPDATE_TYPE.SPECTATOR_JOINED) {
+                    battleshipApp.spectatorJoined(update.properties.playerName)
+                }
             });
 
             battleshipApi.subscribeToChatUpdates(stompClient, playerToken, function (update) {
                 try {
-                    battleshipApp.$refs.chat.addMessage(JSON.parse(update.body));
+                    battleshipApp.$refs.chat.addRawMessage(JSON.parse(update.body));
                 } catch (e) {
                     console.error(e);
                 }

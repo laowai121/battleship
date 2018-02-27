@@ -8,7 +8,7 @@ var battleshipApi = {
             type: 'POST',
             success: function (result) {
                 if (result.success && success) {
-                    success(result.data.playerToken, result.data.gameKey);
+                    success(result.data.playerToken, result.data.playerId, result.data.gameKey);
                 } else if (error) {
                     error(result.data.errorMessage || 'Error while creating the game. Check your internet connection');
                 }
@@ -27,7 +27,7 @@ var battleshipApi = {
             type: 'POST',
             success: function (result) {
                 if (result.success && success) {
-                    success(result.data.playerToken, result.data.gameKey);
+                    success(result.data.playerToken, result.data.playerId, result.data.gameKey);
                 } else if (error) {
                     error(result.data.errorMessage || 'Error while joining the game. Check your internet connection');
                 }
@@ -79,7 +79,7 @@ var battleshipApi = {
             }),
             success: function (result) {
                 if (result.success && success) {
-                    success(result.data.messageSequenceNumber);
+                    success(result.data.messageId);
                 } else if (error) {
                     error(result.data.errorMessage);
                 }
@@ -87,6 +87,24 @@ var battleshipApi = {
             error: function (result) {
                 if (error) {
                     error('Error while sending the message. Check your internet connection');
+                }
+            }
+        });
+    },
+    getGameState: function (playerToken, success, error) {
+        $.ajax({
+            url: GAME_API_URL_PREFIX + '/getState?playerToken=' + encodeURIComponent(playerToken),
+            type: 'GET',
+            success: function (result) {
+                if (result.success && success) {
+                    success(result.data.gameState);
+                } else if (error) {
+                    error(result.data.errorMessage);
+                }
+            },
+            error: function (result) {
+                if (error) {
+                    error('Error while obtaining the game state. Check your internet connection');
                 }
             }
         });

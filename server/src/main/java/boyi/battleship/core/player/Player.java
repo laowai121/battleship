@@ -14,6 +14,8 @@ public class Player extends BattleshipObject {
     @NotNull
     private PlayerType playerType;
 
+    private String token;
+
     public Player(@NotNull String name, @NotNull PlayerType playerType, @NotNull Game game) {
         this.name = name;
         this.playerType = playerType;
@@ -32,5 +34,14 @@ public class Player extends BattleshipObject {
     @NotNull
     public String getName() {
         return name;
+    }
+
+    @NotNull
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(@NotNull String token) {
+        this.token = token;
     }
 }

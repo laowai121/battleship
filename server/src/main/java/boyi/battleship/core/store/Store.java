@@ -16,24 +16,25 @@ public abstract class Store<T extends BattleshipObject> {
     @NotNull
     private Map<String, T> store;
 
-    public Store() {
+
+    Store() {
         store = new HashMap<>();
     }
 
-    public synchronized Optional<T> get(@NotNull String key) {
-        return Optional.ofNullable(store.get(key.toLowerCase()));
+    public synchronized Optional<T> get(@NotNull String id) {
+        return Optional.ofNullable(store.get(id.toLowerCase()));
     }
 
     @NotNull
-    public synchronized T register(String key, @NotNull T o) {
-        o.setKey(key);
-        store.put(key, o);
+    public synchronized T register(String id, @NotNull T o) {
+        o.setId(id);
+        store.put(id, o);
         return o;
     }
 
     @NotNull
     public synchronized T register(@NotNull T o) {
-        String key = keyGenerator.generateKey((n) -> get(n).isPresent());
-        return register(key, o);
+        String id = keyGenerator.generateKey((n) -> get(n).isPresent());
+        return register(id, o);
     }
 }

@@ -1,33 +1,28 @@
 package boyi.battleship.core.chat;
 
+import boyi.battleship.core.battleshipobject.BattleshipObject;
+import boyi.battleship.core.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class ChatMessage {
+public class ChatMessage extends BattleshipObject {
     public static final int MAX_LENGTH = 10000;
 
-    private long sequenceNumber;
-
     @NotNull
-    private String sender;
+    private Player sender;
 
     private long messageTimestamp;
 
     @NotNull
     private String message;
 
-    public ChatMessage(@NotNull String sender, @NotNull String message, long sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
+    public ChatMessage(@NotNull Player sender, @NotNull String message) {
         this.sender = sender;
         this.messageTimestamp = System.currentTimeMillis();
         this.message = message;
     }
 
-    public long getSequenceNumber() {
-        return sequenceNumber;
-    }
-
     @NotNull
-    public String getSender() {
+    public Player getSender() {
         return sender;
     }
 

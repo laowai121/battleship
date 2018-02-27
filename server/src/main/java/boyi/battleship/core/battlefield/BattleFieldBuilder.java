@@ -9,6 +9,7 @@ import java.util.List;
 
 @Service("battleFieldBuilder")
 public class BattleFieldBuilder {
+    @NotNull
     public BuildBattleFieldResult build(@NotNull List<Ship> shipData) {
         BattleField battleField = new BattleField();
 

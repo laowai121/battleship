@@ -137,6 +137,7 @@ var MainMenu = {
               '        </div>' +
               '    </div>' +
               '</div>',
+
     data: function () {
         return {
             loading: false,
@@ -214,17 +215,18 @@ var MainMenu = {
 
         this.createGame = function (asSpectator) {
             var formValid = that.validateForm(that.createGameForm);
+            var playerName = that.createGameForm.playerName.value;
 
             if (formValid) {
                 that.loading = true;
 
                 battleshipApi.createGame(
-                    that.createGameForm.playerName.value,
+                    playerName,
                     that.createGameForm.maxSpectators.value,
                     asSpectator,
-                    function (playerToken, gameKey) {
+                    function (playerToken, playerId, gameKey) {
                         that.loading = false;
-                        that.$root.openGame(playerToken, gameKey);
+                        that.$root.openGame(playerToken, playerId, gameKey, playerName);
                     },
                     function (errorMessage) {
                         that.loading = false;
@@ -236,17 +238,18 @@ var MainMenu = {
 
         this.joinGame = function (asSpectator) {
             var formValid = that.validateForm(that.joinGameForm);
+            var playerName = that.joinGameForm.playerName.value;
 
             if (formValid) {
                 that.loading = true;
 
                 battleshipApi.joinGame(
-                    that.joinGameForm.playerName.value,
+                    playerName,
                     that.joinGameForm.gameKey.value,
                     asSpectator,
-                    function (playerToken, gameKey) {
+                    function (playerToken, playerId, gameKey) {
                         that.loading = false;
-                        that.$root.openGame(playerToken, gameKey);
+                        that.$root.openGame(playerToken, playerId, gameKey, playerName);
                     },
                     function (errorMessage) {
                         that.loading = false;
@@ -256,6 +259,7 @@ var MainMenu = {
             }
         }
     },
+
     methods: {
         openCreateGameMenu: function () {
             this.formDisplayed = MENU_FORM.CREATE_GAME;

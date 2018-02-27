@@ -1,5 +1,6 @@
 package boyi.battleship.server.response;
 
+import boyi.battleship.core.playerspecific.chat.PlayerSpecificChatMessage;
 import boyi.battleship.core.playerspecific.gameevent.PlayerSpecificGameEvent;
 import boyi.battleship.core.playerspecific.gamestate.PlayerSpecificGameState;
 import boyi.battleship.core.chat.ChatMessage;
@@ -13,11 +14,12 @@ public class ResponseBuilder {
     private static final String ERROR_MESSAGE = "errorMessage";
 
     private static final String PLAYER_TOKEN = "playerToken";
+    private static final String PLAYER_ID = "playerId";
     private static final String GAME_KEY = "gameKey";
     private static final String GAME_STATE = "gameState";
     private static final String CHAT_HISTORY = "chatHistory";
     private static final String EVENT_HISTORY = "eventHistory";
-    private static final String MESSAGE_SEQUENCE_NUMBER = "messageSequenceNumber";
+    private static final String MESSAGE_ID = "messageId";
 
     @NotNull
     public BattleshipResponse build(boolean success) {
@@ -25,14 +27,17 @@ public class ResponseBuilder {
     }
 
     @NotNull
-    public BattleshipResponse buildErrorResponse(String errorMessage) {
+    public BattleshipResponse buildErrorResponse(@NotNull String errorMessage) {
         return build(false).setProperty(ERROR_MESSAGE, errorMessage);
     }
 
     @NotNull
-    public BattleshipResponse buildJoinGameResponse(@NotNull String playerToken, @NotNull String gameKey) {
+    public BattleshipResponse buildJoinGameResponse(@NotNull String playerToken,
+                                                    @NotNull String playerId,
+                                                    @NotNull String gameKey) {
         return build(true)
                 .setProperty(PLAYER_TOKEN, playerToken)
+                .setProperty(PLAYER_ID, playerId)
                 .setProperty(GAME_KEY, gameKey);
     }
 
@@ -42,17 +47,17 @@ public class ResponseBuilder {
     }
 
     @NotNull
-    public BattleshipResponse buildChatHistoryResponse(@NotNull List<ChatMessage> chatHistory) {
+    public BattleshipResponse buildChatHistoryResponse(@NotNull List<PlayerSpecificChatMessage> chatHistory) {
         return build(true).setProperty(CHAT_HISTORY, chatHistory);
     }
 
     @NotNull
-    public BattleshipResponse buildEventHistoryResponse(List<PlayerSpecificGameEvent> gameEvents) {
+    public BattleshipResponse buildEventHistoryResponse(@NotNull List<PlayerSpecificGameEvent> gameEvents) {
         return build(true).setProperty(EVENT_HISTORY, gameEvents);
     }
 
     @NotNull
-    public BattleshipResponse buildSendChatMessageResponse(long sequenceNumber) {
-        return build(true).setProperty(MESSAGE_SEQUENCE_NUMBER, sequenceNumber);
+    public BattleshipResponse buildSendChatMessageResponse(@NotNull String messageId) {
+        return build(true).setProperty(MESSAGE_ID, messageId);
     }
 }

@@ -106,6 +106,7 @@ public class Game extends BattleshipObject {
         this.maxSpectators = maxSpectators;
     }
 
+    @NotNull
     public List<Player> getAllPlayersAndSpectators() {
         List<Player> result = new ArrayList<>();
 

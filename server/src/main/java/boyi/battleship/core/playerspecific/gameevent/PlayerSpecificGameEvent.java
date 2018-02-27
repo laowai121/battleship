@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerSpecificGameEvent {
-    public static final String PLAYER = "player";
+    public static final String PLAYER_NAME = "playerName";
 
     @NotNull
     private EventType type;
@@ -20,23 +20,29 @@ public class PlayerSpecificGameEvent {
         properties = new HashMap<>();
     }
 
+    @NotNull
     public EventType getType() {
         return type;
     }
 
     @NotNull
-    public PlayerSpecificGameEvent setType(EventType type) {
+    public PlayerSpecificGameEvent setType(@NotNull EventType type) {
         this.type = type;
         return this;
     }
 
-    @NotNull PlayerSpecificGameEvent addProperty(String name, Object value) {
+    @NotNull PlayerSpecificGameEvent addProperty(@NotNull String name, @NotNull Object value) {
         properties.put(name, value);
         return this;
     }
 
     @Nullable
-    public Object getProperty(String name) {
+    public Object getProperty(@NotNull String name) {
         return properties.get(name);
+    }
+
+    @NotNull
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 }

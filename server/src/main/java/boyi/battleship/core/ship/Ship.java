@@ -10,7 +10,9 @@ public class Ship {
 
     private int shipIndex;
 
-    public Ship(BattleFieldCoordinate start, BattleFieldCoordinate end, int shipIndex) throws InvalidBattleFieldCoordinateException {
+    public Ship(@NotNull BattleFieldCoordinate start,
+                @NotNull BattleFieldCoordinate end,
+                int shipIndex) throws InvalidBattleFieldCoordinateException {
         int startRow = start.getRow();
         int endRow = end.getRow();
         int startCol = start.getCol();

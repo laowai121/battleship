@@ -16,14 +16,14 @@ public class PlayerSpecificGameEventGenerator {
                 return result
                         .setType(EventType.PLAYER_JOINED)
                         .addProperty(
-                                PlayerSpecificGameEvent.PLAYER,
+                                PlayerSpecificGameEvent.PLAYER_NAME,
                                 ((Player) gameEvent.getProperty(GameEvent.PLAYER).get()).getName()
                         );
             case SPECTATOR_JOINED:
                 return result
                         .setType(EventType.SPECTATOR_JOINED)
                         .addProperty(
-                                PlayerSpecificGameEvent.PLAYER,
+                                PlayerSpecificGameEvent.PLAYER_NAME,
                                 ((Player) gameEvent.getProperty(GameEvent.PLAYER).get()).getName()
                         );
         }

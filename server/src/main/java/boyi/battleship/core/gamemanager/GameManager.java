@@ -2,7 +2,9 @@ package boyi.battleship.core.gamemanager;
 
 import boyi.battleship.core.battlefield.BattleFieldBuilder;
 import boyi.battleship.core.battlefield.BuildBattleFieldResult;
-import boyi.battleship.core.chat.ChatMessage;
+import boyi.battleship.core.player.PlayerToken;
+import boyi.battleship.core.playerspecific.chat.PlayerSpecificChatMessage;
+import boyi.battleship.core.playerspecific.chat.PlayerSpecificChatMessageGenerator;
 import boyi.battleship.core.playerspecific.gameevent.PlayerSpecificGameEvent;
 import boyi.battleship.core.store.ChatStore;
 import boyi.battleship.core.game.Game;
@@ -16,6 +18,7 @@ import boyi.battleship.core.playerspecific.gamestate.PlayerSpecificGameState;
 import boyi.battleship.core.playerspecific.gamestate.PlayerSpecificGameStateGenerator;
 import boyi.battleship.core.store.GameStore;
 import boyi.battleship.core.store.PlayerStore;
+import boyi.battleship.core.store.PlayerTokenStore;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,13 +35,19 @@ public class GameManager {
     private final PlayerSpecificGameStateGenerator playerSpecificGameStateGenerator;
     private final GameEventBuilder gameEventBuilder;
     private final GameEventService gameEventService;
+    private final PlayerTokenStore playerTokenStore;
+    private final PlayerSpecificChatMessageGenerator playerSpecificChatMessageGenerator;
 
     @Autowired
-    public GameManager(@NotNull PlayerStore playerStore, @NotNull GameStore gameStore,
-                       @NotNull ChatStore chatStore, @NotNull BattleFieldBuilder battleFieldBuilder,
+    public GameManager(@NotNull PlayerStore playerStore,
+                       @NotNull GameStore gameStore,
+                       @NotNull ChatStore chatStore,
+                       @NotNull BattleFieldBuilder battleFieldBuilder,
                        @NotNull PlayerSpecificGameStateGenerator playerSpecificGameStateGenerator,
                        @NotNull GameEventBuilder gameEventBuilder,
-                       @NotNull GameEventService gameEventService) {
+                       @NotNull GameEventService gameEventService,
+                       @NotNull PlayerTokenStore playerTokenStore,
+                       @NotNull PlayerSpecificChatMessageGenerator playerSpecificChatMessageGenerator) {
         this.playerStore = playerStore;
         this.gameStore = gameStore;
         this.chatStore = chatStore;
@@ -46,35 +55,34 @@ public class GameManager {
         this.playerSpecificGameStateGenerator = playerSpecificGameStateGenerator;
         this.gameEventBuilder = gameEventBuilder;
         this.gameEventService = gameEventService;
+        this.playerTokenStore = playerTokenStore;
+        this.playerSpecificChatMessageGenerator = playerSpecificChatMessageGenerator;
     }
 
     @NotNull
-    public synchronized JoinGameResult tryJoinPlayer(@NotNull Game game, @NotNull String playerName, boolean joinAsSpectator) {
+    public synchronized JoinGameResult tryJoinPlayer(@NotNull Game game, @NotNull String playerName,
+                                                     boolean joinAsSpectator) {
         GameState gameState = game.getState();
 
         if (joinAsSpectator) {
             if (!game.canAcceptMoreSpectators()) {
-                return new JoinGameResult(false, "This game doesn't accept any more spectators", null, game.getKey());
+                return new JoinGameResult(false, "This game doesn't accept any more spectators");
             }
         } else if (!gameState.isAwaitingPlayers()) {
-            return new JoinGameResult(false, "The game has already started", null, game.getKey());
+            return new JoinGameResult(false, "The game has already started");
         }
 
-        String playerToken = joinGame(game, playerName, joinAsSpectator);
-
-        return new JoinGameResult(true, "", playerToken, game.getKey());
+        return joinGame(game, playerName, joinAsSpectator);
     }
 
     @NotNull
-    public synchronized JoinGameResult createAndJoinGame(@NotNull String playerName, int maxSpectators, boolean joinAsSpectator) {
+    public synchronized JoinGameResult createAndJoinGame(@NotNull String playerName,
+                                                         int maxSpectators,
+                                                         boolean joinAsSpectator) {
         Game game = new Game();
-
         game.setMaxSpectators(maxSpectators);
-
         gameStore.register(game);
-        String playerToken = joinGame(game, playerName, joinAsSpectator);
-
-        return new JoinGameResult(true, "", playerToken, game.getKey());
+        return joinGame(game, playerName, joinAsSpectator);
     }
 
     @NotNull
@@ -85,7 +93,7 @@ public class GameManager {
     @NotNull
     public synchronized SubmitShipDataResult submitShipData(@NotNull Player player, @NotNull List<Ship> shipData) {
         if (player.isSpectator()) {
-            return new SubmitShipDataResult(false, "Spectators can't submit ship");
+            return new SubmitShipDataResult(false, "Spectators can't submit ships");
         }
 
         BuildBattleFieldResult buildBattleFieldResult = battleFieldBuilder.build(shipData);
@@ -109,30 +117,36 @@ public class GameManager {
     }
 
     @NotNull
-    public synchronized Optional<Player> authorize(@NotNull String playerKey) {
-        return playerStore.get(playerKey);
+    public synchronized Optional<Player> authorize(@NotNull String playerToken) {
+        return playerTokenStore.get(playerToken).map(PlayerToken::getPlayer);
     }
 
     @NotNull
-    private synchronized String joinGame(@NotNull Game game, @NotNull String playerName, boolean joinAsSpectator) {
+    private synchronized JoinGameResult joinGame(@NotNull Game game, @NotNull String playerName, boolean joinAsSpectator) {
         Player player = playerStore.register(
                 new Player(playerName, joinAsSpectator ? PlayerType.SPECTATOR : PlayerType.PLAYER, game)
         );
 
+        PlayerToken playerToken = playerTokenStore.createFor(player);
+        player.setToken(playerToken.getId());
+
         game.addPlayer(player);
 
         if (joinAsSpectator) {
-            gameEventService.saveGameEvent(gameEventBuilder.buildSpectatorJoinedGameEvent(player), game);
+            gameEventService.saveGameEvent(gameEventBuilder.buildSpectatorJoinedGameEvent(player));
         } else {
-            gameEventService.saveGameEvent(gameEventBuilder.buildPlayerJoinedGameEvent(player), game);
+            gameEventService.saveGameEvent(gameEventBuilder.buildPlayerJoinedGameEvent(player));
         }
 
-        return player.getKey();
+        return new JoinGameResult(true, playerToken.getId(), player.getId(), game.getId());
     }
 
     @NotNull
-    public synchronized List<ChatMessage> getChatHistoryFor(@NotNull Player player) {
-        return chatStore.getOrCreateFor(player.getGame()).getMessages();
+    public synchronized List<PlayerSpecificChatMessage> getChatHistoryFor(@NotNull Player player) {
+        return playerSpecificChatMessageGenerator.generate(
+                chatStore.getOrCreateFor(player.getGame()).getMessages(),
+                player
+        );
     }
 
     @NotNull
@@ -140,7 +154,8 @@ public class GameManager {
         return gameEventService.getHistoryFor(player);
     }
 
-    public synchronized long sendMessage(@NotNull Player player, @NotNull String message) {
-        return gameEventService.sendChatMessage(player.getName(), message, player.getGame());
+    // returns message id
+    public synchronized String sendMessage(@NotNull Player player, @NotNull String message) {
+        return gameEventService.sendChatMessage(player, message, player.getGame());
     }
 }

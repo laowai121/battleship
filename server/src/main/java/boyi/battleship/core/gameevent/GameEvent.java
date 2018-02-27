@@ -1,5 +1,6 @@
 package boyi.battleship.core.gameevent;
 
+import boyi.battleship.core.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,13 +14,17 @@ public class GameEvent {
     private long timestamp;
 
     @NotNull
+    private Player initiator;
+
+    @NotNull
     private EventType type;
 
     @NotNull
     private Map<String, Object> properties;
 
-    public GameEvent(EventType type) {
+    public GameEvent(@NotNull EventType type, @NotNull Player initiator) {
         this.type = type;
+        this.initiator = initiator;
         timestamp = System.currentTimeMillis();
         properties = new HashMap<>();
     }
@@ -38,5 +43,10 @@ public class GameEvent {
     @Nullable
     public Optional<Object> getProperty(String name) {
         return Optional.ofNullable(properties.get(name));
+    }
+
+    @NotNull
+    public Player getInitiator() {
+        return initiator;
     }
 }

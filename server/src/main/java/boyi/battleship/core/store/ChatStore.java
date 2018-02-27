@@ -6,11 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 
 @Repository("chatStore")
-public class ChatStore extends DependentStore<Chat, Game> {
-    @Override
+public class ChatStore extends Store<Chat> {
     @NotNull
     public Chat getOrCreateFor(@NotNull Game game) {
-        String key = game.getKey();
-        return get(key).orElse(register(key, new Chat()));
+        String id = game.getId();
+        return get(id).orElseGet(() -> register(id, new Chat()));
     }
 }

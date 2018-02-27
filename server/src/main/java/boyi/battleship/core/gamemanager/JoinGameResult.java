@@ -1,12 +1,15 @@
 package boyi.battleship.core.gamemanager;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class JoinGameResult {
     private boolean success;
 
+    @NotNull
     private String playerToken;
+
+    @NotNull
+    private String playerId;
 
     @NotNull
     private String gameKey;
@@ -14,20 +17,35 @@ public class JoinGameResult {
     @NotNull
     private String errorMessage;
 
-    public JoinGameResult(boolean success, @NotNull String errorMessage,
-                          String playerToken, @NotNull String gameKey) {
+    public JoinGameResult(boolean success,
+                          @NotNull String playerToken,
+                          @NotNull String playerId,
+                          @NotNull String gameKey) {
         this.success = success;
         this.playerToken = playerToken;
-        this.errorMessage = errorMessage;
+        this.playerId = playerId;
         this.gameKey = gameKey;
+        this.errorMessage = "";
+    }
+
+    public JoinGameResult(boolean success,
+                          @NotNull String errorMessage) {
+        this(success, "", "", "");
+        this.errorMessage = errorMessage;
     }
 
     public boolean isSuccess() {
         return success;
     }
 
+    @NotNull
     public String getPlayerToken() {
         return playerToken;
+    }
+
+    @NotNull
+    public String getPlayerId() {
+        return playerId;
     }
 
     @NotNull

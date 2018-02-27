@@ -3,13 +3,13 @@ package boyi.battleship.core.battleshipobject;
 import org.jetbrains.annotations.NotNull;
 
 public class BattleshipObject {
-    private String key;
+    private String id;
 
-    public String getKey() {
-        return key;
+    public String getId() {
+        return id;
     }
 
-    public void setKey(@NotNull String key) {
-        this.key = key;
+    public void setId(@NotNull String id) {
+        this.id = id;
     }
 }

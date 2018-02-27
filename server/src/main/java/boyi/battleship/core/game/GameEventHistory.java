@@ -9,7 +9,7 @@ import java.util.List;
 
 public class GameEventHistory extends BattleshipObject {
     @NotNull
-    List<GameEvent> gameEvents;
+    private List<GameEvent> gameEvents;
 
     public GameEventHistory() {
         gameEvents = new ArrayList<>();
@@ -19,6 +19,7 @@ public class GameEventHistory extends BattleshipObject {
         gameEvents.add(gameEvent);
     }
 
+    @NotNull
     public List<GameEvent> getGameEvents() {
         return gameEvents;
     }

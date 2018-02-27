@@ -27,46 +27,50 @@ var BattleshipChat = {
         load: function (history) {
             var that = this;
 
-            var existingSequenceNumbers = [];
+            var existingMessageIds = [];
             this.messages.forEach(function (m) {
-                existingSequenceNumbers.push(m.sequenceNumber);
+                existingMessageIds.push(m.id);
             });
 
             history.forEach(function (m) {
-                if (existingSequenceNumbers.indexOf(m.sequenceNumber) < 0) {
-                    that.addMessage(m);
+                if (existingMessageIds.indexOf(m.id) < 0) {
+                    that.addRawMessage(m);
                 }
             });
 
             this.messages.sort(function (a, b) {
-                var aSequenceNumber = a.sequenceNumber;
-                var bSequenceNumber = b.sequenceNumber;
                 var aDateTime = a.dateTime;
                 var bDateTime = b.dateTime;
 
-                if (aSequenceNumber < bSequenceNumber) {
-                    if (aDateTime > bDateTime) {
-                        console.error('Messages out of order!');
-                    }
-                } else if (bSequenceNumber < aSequenceNumber) {
-                    if (bDateTime > aDateTime) {
-                        console.error('Messages out of order!');
-                    }
+                if (aDateTime < bDateTime) {
+                    return -1;
+                } else if (bDateTime < aDateTime) {
+                    return 1;
                 } else {
-                    console.error('Duplicate message sequence numbers!');
+                    return 0;
                 }
             });
 
             // this.$el.querySelector('.chat-input').focus();
             this.chatLoaded = true;
         },
-        addMessage: function (message) {
+        addMessage: function (id, dateTime, sender, senderId, message) {
             this.messages.push({
-                sequenceNumber: message.sequenceNumber,
-                dateTime:  new Date(message.messageTimestamp),
-                sender: message.sender,
-                message: message.message
+                id: id,
+                dateTime:  dateTime,
+                sender: sender,
+                senderId: senderId,
+                message: message
             });
+        },
+        addRawMessage: function (message) {
+            this.addMessage(
+                message.id,
+                new Date(message.messageTimestamp),
+                message.sender,
+                message.senderId,
+                message.message
+            );
         },
         inputChatMessageKeydown: function (e) {
             if (e.keyCode === 13) {
@@ -82,7 +86,14 @@ var BattleshipChat = {
                     battleshipApi.sendChatMessage(
                         battleshipApp.playerToken,
                         this.chatMessage,
-                        function (messageSequenceNumber) {
+                        function (messageId) {
+                            that.addMessage(
+                                messageId,
+                                new Date(),
+                                battleshipApp.playerName,
+                                battleshipApp.playerId,
+                                that.chatMessage
+                            );
                             that.chatMessage = '';
                         },
                         function (errorMessage) {

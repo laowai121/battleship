@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 public class GameEventBuilder {
     @NotNull
     public GameEvent buildPlayerJoinedGameEvent(@NotNull Player player) {
-        return new GameEvent(EventType.PLAYER_JOINED)
+        return new GameEvent(EventType.PLAYER_JOINED, player)
                 .addProperty(GameEvent.PLAYER, player);
     }
 
     @NotNull
     public GameEvent buildSpectatorJoinedGameEvent(@NotNull Player player) {
-        return new GameEvent(EventType.SPECTATOR_JOINED)
+        return new GameEvent(EventType.SPECTATOR_JOINED, player)
                 .addProperty(GameEvent.PLAYER, player);
     }
 }

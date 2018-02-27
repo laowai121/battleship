@@ -6,7 +6,6 @@ import boyi.battleship.core.gamemanager.JoinGameResult;
 import boyi.battleship.core.gamemanager.SubmitShipDataResult;
 import boyi.battleship.core.player.Player;
 import boyi.battleship.core.playerspecific.gamestate.PlayerSpecificGameStateGenerator;
-import boyi.battleship.server.requests.RequestWithPlayerToken;
 import boyi.battleship.server.requests.SubmitShipsRequest;
 import boyi.battleship.server.response.BattleshipResponse;
 import boyi.battleship.server.response.ResponseBuilder;
@@ -60,7 +59,11 @@ public class GameController {
             return responseBuilder.buildErrorResponse("Unable to join the game: " + joinGameResult.getErrorMessage());
         }
 
-        return responseBuilder.buildJoinGameResponse(joinGameResult.getPlayerToken(), joinGameResult.getGameKey());
+        return responseBuilder.buildJoinGameResponse(
+                joinGameResult.getPlayerToken(),
+                joinGameResult.getPlayerId(),
+                joinGameResult.getGameKey()
+        );
     }
 
     @RequestMapping(value = "/join", method = RequestMethod.POST)
@@ -87,7 +90,11 @@ public class GameController {
             return responseBuilder.buildErrorResponse("Unable to join the game: " + joinGameResult.getErrorMessage());
         }
 
-        return responseBuilder.buildJoinGameResponse(joinGameResult.getPlayerToken(), joinGameResult.getGameKey());
+        return responseBuilder.buildJoinGameResponse(
+                joinGameResult.getPlayerToken(),
+                joinGameResult.getPlayerId(),
+                joinGameResult.getGameKey()
+        );
     }
 
     @RequestMapping(value = "/submitShips", method = RequestMethod.POST)
@@ -111,7 +118,7 @@ public class GameController {
     }
 
     @RequestMapping(value = "/getState", method = RequestMethod.GET)
-    private BattleshipResponse getState(@RequestParam(name = "playerName") String playerToken) {
+    private BattleshipResponse getState(@RequestParam(name = "playerToken") String playerToken) {
         Optional<Player> player = gameManager.authorize(playerToken);
         if (!player.isPresent()) {
             return responseBuilder.buildErrorResponse("Invalid player token");

@@ -2,8 +2,7 @@ package boyi.battleship.server.controllers;
 
 import boyi.battleship.core.gamemanager.GameManager;
 import boyi.battleship.core.player.Player;
-import boyi.battleship.core.chat.ChatMessage;
-import boyi.battleship.server.requests.RequestWithPlayerToken;
+import boyi.battleship.core.playerspecific.chat.PlayerSpecificChatMessage;
 import boyi.battleship.server.requests.SendChatMessageRequest;
 import boyi.battleship.server.response.BattleshipResponse;
 import boyi.battleship.server.response.ResponseBuilder;
@@ -40,7 +39,7 @@ public class ChatController {
 
         Player player = authorizedPlayer.get();
 
-        List<ChatMessage> chatHistory = gameManager.getChatHistoryFor(player);
+        List<PlayerSpecificChatMessage> chatHistory = gameManager.getChatHistoryFor(player);
 
         return responseBuilder.buildChatHistoryResponse(chatHistory);
     }
@@ -59,8 +58,8 @@ public class ChatController {
             return responseBuilder.buildErrorResponse("Unable to send the message: " + validationResult.getMessage());
         }
 
-        long sequenceNumber = gameManager.sendMessage(authorizedPlayer.get(), message);
+        String messageId = gameManager.sendMessage(authorizedPlayer.get(), message);
 
-        return responseBuilder.buildSendChatMessageResponse(sequenceNumber);
+        return responseBuilder.buildSendChatMessageResponse(messageId);
     }
 }

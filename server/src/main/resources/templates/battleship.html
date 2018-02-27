@@ -47,9 +47,7 @@
                             </div>
                         </div>
                         <div class="top-panel-right">
-                            <div class="inner">
-                                Loading...
-                            </div>
+                            <div class="inner">{{ gameState }}</div>
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -65,17 +63,22 @@
                 </div>
                 <battleship-chat ref="chat"></battleship-chat>
             </div>
-            <div class="right-panel"></div>
+            <div class="right-panel">
+                <!--<div class="player-container me">{{ playerName }}</div>-->
+                <!--<div class="player-container opponent">{{ opponentPlayer.name }}</div>-->
+                <!--<div class="player-container spectator" v-for="spectator in spectators">{{ spectator.name }}</div>-->
+            </div>
             <div class="clearfix"></div>
         </div>
 
         <vue-toast ref='toast'></vue-toast>
     </div>
 
+    <script th:src="@{js/util.js}" src="../static/js/util.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
-    <script th:src="@{js/util.js}" src="../static/js/util.js"></script>
     <script th:src="@{js/battleship-live.js}" src="../static/js/battleship-live."></script>
 
     <link rel="stylesheet" th:href="@{lib/toast/vue-toast.min.css}"
