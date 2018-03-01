@@ -53,10 +53,10 @@ public class GameEventService {
         ));
     }
 
-    // returns message id
     @NotNull
-    public String sendChatMessage(@NotNull Player sender, @NotNull String message, @NotNull Game game) {
+    public ChatMessage sendChatMessage(@NotNull Player sender, @NotNull String message, @NotNull Game game) {
         ChatMessage chatMessage = chatMessageStore.register(new ChatMessage(sender, message));
+
         chatStore.getOrCreateFor(game).addMessage(chatMessage);
         getAllPlayersAndSpectatorsWithoutInitiatorFor(game, sender).forEach(
                 player -> playerSpecificChatMessageGenerator.generate(chatMessage, player).ifPresent(
@@ -66,7 +66,8 @@ public class GameEventService {
                         )
                 )
         );
-        return chatMessage.getId();
+
+        return chatMessage;
     }
 
     @NotNull

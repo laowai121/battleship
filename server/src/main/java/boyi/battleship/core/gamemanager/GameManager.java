@@ -154,8 +154,7 @@ public class GameManager {
         return gameEventService.getHistoryFor(player);
     }
 
-    // returns message id
     public synchronized String sendMessage(@NotNull Player player, @NotNull String message) {
-        return gameEventService.sendChatMessage(player, message, player.getGame());
+        return gameEventService.sendChatMessage(player, message, player.getGame()).getId();
     }
 }
