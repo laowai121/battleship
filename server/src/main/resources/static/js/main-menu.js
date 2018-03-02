@@ -224,9 +224,10 @@ var MainMenu = {
                     playerName,
                     that.createGameForm.maxSpectators.value,
                     asSpectator,
-                    function (playerToken, playerId, gameKey) {
+                    function (playerToken, playerId, gameKey, isPlayerA) {
                         that.loading = false;
-                        that.$root.openGame(playerToken, playerId, gameKey, playerName);
+                        that.$root.openGame(playerToken, playerId, gameKey,
+                            playerName, asSpectator, isPlayerA);
                     },
                     function (errorMessage) {
                         that.loading = false;
@@ -247,9 +248,10 @@ var MainMenu = {
                     playerName,
                     that.joinGameForm.gameKey.value,
                     asSpectator,
-                    function (playerToken, playerId, gameKey) {
+                    function (playerToken, playerId, gameKey, isPlayerA) {
                         that.loading = false;
-                        that.$root.openGame(playerToken, playerId, gameKey, playerName);
+                        that.$root.openGame(playerToken, playerId, gameKey,
+                            playerName, asSpectator, isPlayerA);
                     },
                     function (errorMessage) {
                         that.loading = false;

@@ -2,6 +2,7 @@ package boyi.battleship.core.playerspecific.gameevent;
 
 import boyi.battleship.core.gameevent.GameEvent;
 import boyi.battleship.core.player.Player;
+import boyi.battleship.core.simplified.SimplifiedPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +18,18 @@ public class PlayerSpecificGameEventGenerator {
                         .setType(EventType.PLAYER_JOINED)
                         .addProperty(
                                 PlayerSpecificGameEvent.PLAYER_NAME,
-                                ((Player) gameEvent.getProperty(GameEvent.PLAYER).get()).getName()
+                                gameEvent.getProperty(GameEvent.PLAYER)
+                                        .map((p) -> ((SimplifiedPlayer) p).getName())
+                                        .orElse("Unknown")
                         );
             case SPECTATOR_JOINED:
                 return result
                         .setType(EventType.SPECTATOR_JOINED)
                         .addProperty(
                                 PlayerSpecificGameEvent.PLAYER_NAME,
-                                ((Player) gameEvent.getProperty(GameEvent.PLAYER).get()).getName()
+                                gameEvent.getProperty(GameEvent.SPECTATOR)
+                                        .map((p) -> ((SimplifiedPlayer) p).getName())
+                                        .orElse("Unknown")
                         );
         }
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository("gameEventHistoryStore")
 public class GameEventHistoryStore extends Store<GameEventHistory> {
     @NotNull
-    public GameEventHistory getOrCreateFor(@NotNull Game game) {
+    public synchronized GameEventHistory getOrCreateFor(@NotNull Game game) {
         String id = game.getId();
         return get(id).orElseGet(() -> register(id, new GameEventHistory()));
     }

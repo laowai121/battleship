@@ -8,7 +8,12 @@ var battleshipApi = {
             type: 'POST',
             success: function (result) {
                 if (result.success && success) {
-                    success(result.data.playerToken, result.data.playerId, result.data.gameKey);
+                    success(
+                        result.data.playerToken,
+                        result.data.playerId,
+                        result.data.gameKey,
+                        result.data.isPlayerA
+                    );
                 } else if (error) {
                     error(result.data.errorMessage || 'Error while creating the game. Check your internet connection');
                 }
@@ -27,7 +32,12 @@ var battleshipApi = {
             type: 'POST',
             success: function (result) {
                 if (result.success && success) {
-                    success(result.data.playerToken, result.data.playerId, result.data.gameKey);
+                    success(
+                        result.data.playerToken,
+                        result.data.playerId,
+                        result.data.gameKey,
+                        result.data.isPlayerA
+                    );
                 } else if (error) {
                     error(result.data.errorMessage || 'Error while joining the game. Check your internet connection');
                 }
@@ -98,6 +108,24 @@ var battleshipApi = {
             success: function (result) {
                 if (result.success && success) {
                     success(result.data.gameState);
+                } else if (error) {
+                    error(result.data.errorMessage);
+                }
+            },
+            error: function (result) {
+                if (error) {
+                    error('Error while obtaining the game state. Check your internet connection');
+                }
+            }
+        });
+    },
+    getExtendedGameState: function (playerToken, success, error) {
+        $.ajax({
+            url: GAME_API_URL_PREFIX + '/getExtendedState?playerToken=' + encodeURIComponent(playerToken),
+            type: 'GET',
+            success: function (result) {
+                if (result.success && success) {
+                    success(result.data.extendedGameState);
                 } else if (error) {
                     error(result.data.errorMessage);
                 }

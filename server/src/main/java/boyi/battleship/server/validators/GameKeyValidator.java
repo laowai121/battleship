@@ -12,10 +12,11 @@ public class GameKeyValidator {
             return new ValidationResult(false, "Please, enter Game Key");
         }
 
-        if (gameKey.length() != KeyGenerator.KEY_LENGTH
+        if (gameKey.length() != KeyGenerator.DEFAULT_KEY_LENGTH
                 || gameKey.chars().mapToObj((n) -> (char) n).anyMatch((n) -> KeyGenerator.KEY_CHARS.indexOf(n) < 0)) {
             return new ValidationResult(false,
-                    "Invalid Game Key. Game Key should be a sequence of hexadecimal digits " + KeyGenerator.KEY_LENGTH);
+                    "Invalid Game Key. Game Key should be a sequence of hexadecimal digits "
+                            + KeyGenerator.DEFAULT_KEY_LENGTH);
         }
 
         return new ValidationResult(true, "Game Key is valid");

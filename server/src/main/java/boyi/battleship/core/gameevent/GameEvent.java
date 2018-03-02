@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public class GameEvent {
     public static final String PLAYER = "player";
+    public static final String SPECTATOR = "spectator";
 
     private long timestamp;
 
@@ -40,7 +41,7 @@ public class GameEvent {
         return this;
     }
 
-    @Nullable
+    @NotNull
     public Optional<Object> getProperty(String name) {
         return Optional.ofNullable(properties.get(name));
     }

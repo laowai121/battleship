@@ -1,9 +1,9 @@
 package boyi.battleship.server.response;
 
+import boyi.battleship.core.gamestate.GameState;
 import boyi.battleship.core.playerspecific.chat.PlayerSpecificChatMessage;
+import boyi.battleship.core.playerspecific.extendedgamestate.ExtendedGameState;
 import boyi.battleship.core.playerspecific.gameevent.PlayerSpecificGameEvent;
-import boyi.battleship.core.playerspecific.gamestate.PlayerSpecificGameState;
-import boyi.battleship.core.chat.ChatMessage;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +16,12 @@ public class ResponseBuilder {
     private static final String PLAYER_TOKEN = "playerToken";
     private static final String PLAYER_ID = "playerId";
     private static final String GAME_KEY = "gameKey";
+    private static final String IS_PLAYER_A = "isPlayerA";
     private static final String GAME_STATE = "gameState";
     private static final String CHAT_HISTORY = "chatHistory";
     private static final String EVENT_HISTORY = "eventHistory";
     private static final String MESSAGE_ID = "messageId";
+    private static final String EXTENDED_GAME_STATE = "extendedGameState";
 
     @NotNull
     public BattleshipResponse build(boolean success) {
@@ -34,16 +36,23 @@ public class ResponseBuilder {
     @NotNull
     public BattleshipResponse buildJoinGameResponse(@NotNull String playerToken,
                                                     @NotNull String playerId,
-                                                    @NotNull String gameKey) {
+                                                    @NotNull String gameKey,
+                                                    boolean isPlayerA) {
         return build(true)
                 .setProperty(PLAYER_TOKEN, playerToken)
                 .setProperty(PLAYER_ID, playerId)
-                .setProperty(GAME_KEY, gameKey);
+                .setProperty(GAME_KEY, gameKey)
+                .setProperty(IS_PLAYER_A, isPlayerA);
     }
 
     @NotNull
-    public BattleshipResponse buildGameStateResponse(@NotNull PlayerSpecificGameState gameState) {
+    public BattleshipResponse buildGameStateResponse(@NotNull GameState gameState) {
         return build(true).setProperty(GAME_STATE, gameState);
+    }
+
+    @NotNull
+    public BattleshipResponse buildExtendedGameStateResponse(@NotNull ExtendedGameState extendedGameState) {
+        return build(true).setProperty(EXTENDED_GAME_STATE, extendedGameState);
     }
 
     @NotNull

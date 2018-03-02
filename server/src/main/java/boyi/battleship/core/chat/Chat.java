@@ -19,8 +19,7 @@ public class Chat extends BattleshipObject {
         return messages;
     }
 
-    public ChatMessage addMessage(@NotNull ChatMessage chatMessage) {
+    public void addMessage(@NotNull ChatMessage chatMessage) {
         messages.add(chatMessage);
-        return chatMessage;
     }
 }

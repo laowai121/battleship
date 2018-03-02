@@ -17,20 +17,24 @@ public class JoinGameResult {
     @NotNull
     private String errorMessage;
 
+    private boolean isPlayerA;
+
     public JoinGameResult(boolean success,
                           @NotNull String playerToken,
                           @NotNull String playerId,
-                          @NotNull String gameKey) {
+                          @NotNull String gameKey,
+                          boolean isPlayerA) {
         this.success = success;
         this.playerToken = playerToken;
         this.playerId = playerId;
         this.gameKey = gameKey;
+        this.isPlayerA = isPlayerA;
         this.errorMessage = "";
     }
 
     public JoinGameResult(boolean success,
                           @NotNull String errorMessage) {
-        this(success, "", "", "");
+        this(success, "", "", "", false);
         this.errorMessage = errorMessage;
     }
 
@@ -56,5 +60,9 @@ public class JoinGameResult {
     @NotNull
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public boolean isPlayerA() {
+        return isPlayerA;
     }
 }

@@ -2,12 +2,15 @@ package boyi.battleship.core.game;
 
 import boyi.battleship.core.battlefield.BattleField;
 import boyi.battleship.core.battleshipobject.BattleshipObject;
+import boyi.battleship.core.exceptions.BattleshipException;
+import boyi.battleship.core.gamestate.GameState;
 import boyi.battleship.core.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Game extends BattleshipObject {
     public static final int UNLIMITED_SPECTATORS = -1;
@@ -19,6 +22,7 @@ public class Game extends BattleshipObject {
     @Nullable
     private Player playerB;
 
+    @Nullable
     private Player currentPlayer;
 
     @Nullable
@@ -29,58 +33,41 @@ public class Game extends BattleshipObject {
 
     private int maxSpectators;
 
-    @NotNull
-    private List<Player> spectators;
+    private boolean finished;
 
     @NotNull
-    private GameState state;
+    private List<Player> spectators;
 
     public Game() {
         maxSpectators = UNLIMITED_SPECTATORS;
         spectators = new ArrayList<>();
-        state = GameState.AWAITING_A;
+        finished = false;
     }
 
-    public boolean canSubmitShips(@NotNull Player player) {
-        if (player == playerA || player == playerB) {
-            if (state == GameState.AWAITING_SHIPS) {
-                return true;
-            } else if (state == GameState.AWAITING_A_SHIPS) {
-                return player == playerA;
-            } else if (state == GameState.AWAITING_B_SHIPS) {
-                return player == playerB;
-            }
-        }
-
-        return false;
+    public boolean playerAShipsSubmitted() {
+        return playerABattleField != null;
     }
 
-    public void initBattleField(@NotNull Player player, @NotNull BattleField battleField) {
-        if (player == playerA) {
-            playerABattleField = battleField;
-        } else if (player == playerB) {
-            playerBBattleField = battleField;
-        }
+    public boolean playerBShipsSubmitted() {
+        return playerBBattleField != null;
+    }
 
-        if (playerABattleField != null && playerBBattleField != null) {
-            currentPlayer = Math.random() >= 0.5 ? playerA : playerB;
-        }
+    public void initPlayerABattleField(@NotNull BattleField battleField) {
+        playerABattleField = battleField;
+    }
 
-        updateGameState();
+    public void initPlayerBBattleField(@NotNull BattleField battleField) {
+        playerBBattleField = battleField;
     }
 
     public void addPlayer(@NotNull Player player) {
         if (player.isSpectator()) {
             spectators.add(player);
-        } else {
-            if (playerA == null) {
-                playerA = player;
-            } else if (playerB == null) {
-                playerB = player;
-            }
+        } else if (playerA == null) {
+            playerA = player;
+        } else if (playerB == null) {
+            playerB = player;
         }
-
-        updateGameState();
     }
 
     public boolean canAcceptMoreSpectators() {
@@ -88,18 +75,18 @@ public class Game extends BattleshipObject {
     }
 
     @NotNull
-    public GameState getState() {
-        return state;
+    public Optional<Player> getPlayerA() {
+        return Optional.ofNullable(playerA);
     }
 
-    @Nullable
-    public Player getPlayerA() {
-        return playerA;
+    @NotNull
+    public Optional<Player> getPlayerB() {
+        return Optional.ofNullable(playerB);
     }
 
-    @Nullable
-    public Player getPlayerB() {
-        return playerB;
+    @NotNull
+    public List<Player> getSpectators() {
+        return spectators;
     }
 
     public void setMaxSpectators(int maxSpectators) {
@@ -110,35 +97,44 @@ public class Game extends BattleshipObject {
     public List<Player> getAllPlayersAndSpectators() {
         List<Player> result = new ArrayList<>();
 
-        if (playerA != null) {
-            result.add(playerA);
-        }
-
-        if (playerB != null) {
-            result.add(playerB);
-        }
-
-
+        getPlayerA().ifPresent(result::add);
+        getPlayerB().ifPresent(result::add);
         result.addAll(spectators);
 
         return result;
     }
 
-    private void updateGameState() {
+    @NotNull
+    public GameState getState() {
         if (playerA == null) {
-            state = GameState.AWAITING_A;
-        } else if (playerB == null) {
-            state = GameState.AWAITING_B;
-        } else if (playerABattleField == null && playerBBattleField == null) {
-            state = GameState.AWAITING_SHIPS;
-        } else if (playerABattleField == null) {
-            state = GameState.AWAITING_A_SHIPS;
-        } else if (playerBBattleField == null) {
-            state = GameState.AWAITING_B_SHIPS;
+            return GameState.AWAITING_A;
+        }if (playerB == null) {
+            return GameState.AWAITING_B;
+        } else if (!playerAShipsSubmitted()) {
+            return !playerBShipsSubmitted() ? GameState.AWAITING_SHIPS : GameState.AWAITING_A_SHIPS;
+        } else if (!playerBShipsSubmitted()) {
+            return GameState.AWAITING_B_SHIPS;
         } else if (currentPlayer == playerA) {
-            state = playerBBattleField.hasAliveShips() ? GameState.AWAITING_A_ATTACK : GameState.A_WON;
+            return finished ? GameState.A_WON : GameState.AWAITING_A_ATTACK;
         } else if (currentPlayer == playerB) {
-            state = playerABattleField.hasAliveShips() ? GameState.AWAITING_B_ATTACK : GameState.B_WON;
+            return finished ? GameState.B_WON : GameState.AWAITING_B_ATTACK;
+        } else {
+            return GameState.UNKNOWN;
         }
+    }
+
+    @NotNull
+    private Player getOrSetCurrentPlayer() throws BattleshipException {
+        if (currentPlayer == null) {
+            currentPlayer = Math.random() >= 0.5 ? playerA : playerB;
+        }
+
+        if (currentPlayer == null) {
+            throw new BattleshipException(
+                    "getOrSetCurrentPlayer() shouldn't be called until both player A and player B joined the game"
+            );
+        }
+
+        return currentPlayer;
     }
 }

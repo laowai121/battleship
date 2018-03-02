@@ -37,4 +37,10 @@ public abstract class Store<T extends BattleshipObject> {
         String id = keyGenerator.generateKey((n) -> get(n).isPresent());
         return register(id, o);
     }
+
+    @NotNull
+    public synchronized T register(@NotNull T o, int keyLength) {
+        String id = keyGenerator.generateKey((n) -> get(n).isPresent(), keyLength);
+        return register(id, o);
+    }
 }

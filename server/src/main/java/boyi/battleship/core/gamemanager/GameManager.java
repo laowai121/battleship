@@ -2,20 +2,22 @@ package boyi.battleship.core.gamemanager;
 
 import boyi.battleship.core.battlefield.BattleFieldBuilder;
 import boyi.battleship.core.battlefield.BuildBattleFieldResult;
+import boyi.battleship.core.exceptions.BattleshipException;
+import boyi.battleship.core.gameevent.GameEvent;
+import boyi.battleship.core.playerspecific.extendedgamestate.ExtendedGameState;
 import boyi.battleship.core.player.PlayerToken;
 import boyi.battleship.core.playerspecific.chat.PlayerSpecificChatMessage;
 import boyi.battleship.core.playerspecific.chat.PlayerSpecificChatMessageGenerator;
+import boyi.battleship.core.playerspecific.extendedgamestate.ExtendedGameStateGenerator;
 import boyi.battleship.core.playerspecific.gameevent.PlayerSpecificGameEvent;
 import boyi.battleship.core.store.ChatStore;
 import boyi.battleship.core.game.Game;
-import boyi.battleship.core.game.GameState;
+import boyi.battleship.core.gamestate.GameState;
 import boyi.battleship.core.gameevent.GameEventBuilder;
 import boyi.battleship.core.gameevent.GameEventService;
 import boyi.battleship.core.player.Player;
 import boyi.battleship.core.player.PlayerType;
 import boyi.battleship.core.ship.Ship;
-import boyi.battleship.core.playerspecific.gamestate.PlayerSpecificGameState;
-import boyi.battleship.core.playerspecific.gamestate.PlayerSpecificGameStateGenerator;
 import boyi.battleship.core.store.GameStore;
 import boyi.battleship.core.store.PlayerStore;
 import boyi.battleship.core.store.PlayerTokenStore;
@@ -32,31 +34,31 @@ public class GameManager {
     private final GameStore gameStore;
     private final ChatStore chatStore;
     private final BattleFieldBuilder battleFieldBuilder;
-    private final PlayerSpecificGameStateGenerator playerSpecificGameStateGenerator;
     private final GameEventBuilder gameEventBuilder;
     private final GameEventService gameEventService;
     private final PlayerTokenStore playerTokenStore;
     private final PlayerSpecificChatMessageGenerator playerSpecificChatMessageGenerator;
+    private final ExtendedGameStateGenerator extendedGameStateGenerator;
 
     @Autowired
     public GameManager(@NotNull PlayerStore playerStore,
                        @NotNull GameStore gameStore,
                        @NotNull ChatStore chatStore,
                        @NotNull BattleFieldBuilder battleFieldBuilder,
-                       @NotNull PlayerSpecificGameStateGenerator playerSpecificGameStateGenerator,
                        @NotNull GameEventBuilder gameEventBuilder,
                        @NotNull GameEventService gameEventService,
                        @NotNull PlayerTokenStore playerTokenStore,
-                       @NotNull PlayerSpecificChatMessageGenerator playerSpecificChatMessageGenerator) {
+                       @NotNull PlayerSpecificChatMessageGenerator playerSpecificChatMessageGenerator,
+                       @NotNull ExtendedGameStateGenerator extendedGameStateGenerator) {
         this.playerStore = playerStore;
         this.gameStore = gameStore;
         this.chatStore = chatStore;
         this.battleFieldBuilder = battleFieldBuilder;
-        this.playerSpecificGameStateGenerator = playerSpecificGameStateGenerator;
         this.gameEventBuilder = gameEventBuilder;
         this.gameEventService = gameEventService;
         this.playerTokenStore = playerTokenStore;
         this.playerSpecificChatMessageGenerator = playerSpecificChatMessageGenerator;
+        this.extendedGameStateGenerator = extendedGameStateGenerator;
     }
 
     @NotNull
@@ -101,19 +103,26 @@ public class GameManager {
             return new SubmitShipDataResult(false, "Invalid ship data");
         }
 
-        Game game = player.getGame();
-
-        if (game.canSubmitShips(player)) {
-            game.initBattleField(player, buildBattleFieldResult.getBattleField());
-            return new SubmitShipDataResult(true, "");
-        } else {
-            return new SubmitShipDataResult(false, "You have already submitted ship data");
+        try {
+            if (player.canSubmitShips()) {
+                player.submitShips(buildBattleFieldResult.getBattleField());
+                return new SubmitShipDataResult(true, "");
+            } else {
+                return new SubmitShipDataResult(false, "You have already submitted ship data");
+            }
+        } catch (BattleshipException e) {
+            return new SubmitShipDataResult(false, e.getMessage());
         }
     }
 
     @NotNull
-    public synchronized PlayerSpecificGameState getGameState(@NotNull Player player) {
-        return playerSpecificGameStateGenerator.generate(player.getGame().getState(), player);
+    public synchronized GameState getGameStateFor(@NotNull Player player) {
+        return player.getGameState();
+    }
+
+    @NotNull
+    public synchronized ExtendedGameState getExtendedGameStateFor(@NotNull Player player) {
+        return extendedGameStateGenerator.generateFor(player);
     }
 
     @NotNull
@@ -132,13 +141,18 @@ public class GameManager {
 
         game.addPlayer(player);
 
-        if (joinAsSpectator) {
-            gameEventService.saveGameEvent(gameEventBuilder.buildSpectatorJoinedGameEvent(player));
-        } else {
-            gameEventService.saveGameEvent(gameEventBuilder.buildPlayerJoinedGameEvent(player));
-        }
+        GameEvent gameEvent = joinAsSpectator
+                ? gameEventBuilder.buildSpectatorJoinedGameEvent(player)
+                : gameEventBuilder.buildPlayerJoinedGameEvent(player);
 
-        return new JoinGameResult(true, playerToken.getId(), player.getId(), game.getId());
+        gameEventService.saveGameEvent(gameEvent);
+
+        return new JoinGameResult(
+                true, playerToken.getId(),
+                player.getId(),
+                game.getId(),
+                player.isPlayerA()
+        );
     }
 
     @NotNull

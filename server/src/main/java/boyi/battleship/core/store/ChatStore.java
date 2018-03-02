@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository("chatStore")
 public class ChatStore extends Store<Chat> {
     @NotNull
-    public Chat getOrCreateFor(@NotNull Game game) {
+    public synchronized Chat getOrCreateFor(@NotNull Game game) {
         String id = game.getId();
         return get(id).orElseGet(() -> register(id, new Chat()));
     }

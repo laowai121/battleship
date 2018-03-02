@@ -23,10 +23,12 @@ var battleshipLive = {
                 }
 
                 if (update.type === BATTLESHIP_UPDATE_TYPE.PLAYER_JOINED) {
-                    battleshipApp.playerJoined(update.properties.playerName)
+                    battleshipApp.playerJoined(update.properties.player)
                 } else if (update.type === BATTLESHIP_UPDATE_TYPE.SPECTATOR_JOINED) {
-                    battleshipApp.spectatorJoined(update.properties.playerName)
+                    battleshipApp.spectatorJoined(update.properties.spectator)
                 }
+
+                battleshipApp.reloadGameState();
             });
 
             battleshipApi.subscribeToChatUpdates(stompClient, playerToken, function (update) {

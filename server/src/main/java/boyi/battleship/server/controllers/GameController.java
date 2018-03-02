@@ -5,7 +5,6 @@ import boyi.battleship.core.gamemanager.GameManager;
 import boyi.battleship.core.gamemanager.JoinGameResult;
 import boyi.battleship.core.gamemanager.SubmitShipDataResult;
 import boyi.battleship.core.player.Player;
-import boyi.battleship.core.playerspecific.gamestate.PlayerSpecificGameStateGenerator;
 import boyi.battleship.server.requests.SubmitShipsRequest;
 import boyi.battleship.server.response.BattleshipResponse;
 import boyi.battleship.server.response.ResponseBuilder;
@@ -28,17 +27,14 @@ public class GameController {
     private final GameManager gameManager;
     private final ResponseBuilder responseBuilder;
     private final ShipParser shipParser;
-    private final PlayerSpecificGameStateGenerator playerSpecificGameStateGenerator;
 
     @Autowired
     public GameController(@NotNull RequestValidator requestValidator, @NotNull GameManager gameManager,
-                          @NotNull ResponseBuilder responseBuilder, @NotNull ShipParser shipParser,
-                          @NotNull PlayerSpecificGameStateGenerator playerSpecificGameStateGenerator) {
+                          @NotNull ResponseBuilder responseBuilder, @NotNull ShipParser shipParser) {
         this.requestValidator = requestValidator;
         this.gameManager = gameManager;
         this.responseBuilder = responseBuilder;
         this.shipParser = shipParser;
-        this.playerSpecificGameStateGenerator = playerSpecificGameStateGenerator;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -62,7 +58,8 @@ public class GameController {
         return responseBuilder.buildJoinGameResponse(
                 joinGameResult.getPlayerToken(),
                 joinGameResult.getPlayerId(),
-                joinGameResult.getGameKey()
+                joinGameResult.getGameKey(),
+                joinGameResult.isPlayerA()
         );
     }
 
@@ -93,7 +90,8 @@ public class GameController {
         return responseBuilder.buildJoinGameResponse(
                 joinGameResult.getPlayerToken(),
                 joinGameResult.getPlayerId(),
-                joinGameResult.getGameKey()
+                joinGameResult.getGameKey(),
+                joinGameResult.isPlayerA()
         );
     }
 
@@ -119,12 +117,19 @@ public class GameController {
 
     @RequestMapping(value = "/getState", method = RequestMethod.GET)
     private BattleshipResponse getState(@RequestParam(name = "playerToken") String playerToken) {
+        return gameManager.authorize(playerToken)
+                .map(player -> responseBuilder.buildGameStateResponse(gameManager.getGameStateFor(player)))
+                .orElseGet(() -> responseBuilder.buildErrorResponse("Invalid player token"));
+    }
+
+    @RequestMapping(value = "/getExtendedState", method = RequestMethod.GET)
+    private BattleshipResponse getExtendedGameState(@RequestParam(name = "playerToken") String playerToken) {
         Optional<Player> player = gameManager.authorize(playerToken);
         if (!player.isPresent()) {
             return responseBuilder.buildErrorResponse("Invalid player token");
         }
 
-        return responseBuilder.buildGameStateResponse(gameManager.getGameState(player.get()));
+        return responseBuilder.buildExtendedGameStateResponse(gameManager.getExtendedGameStateFor(player.get()));
     }
 
     @RequestMapping(value = "/getEventHistory", method = RequestMethod.GET)
