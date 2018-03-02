@@ -17,19 +17,15 @@ public class PlayerSpecificGameEventGenerator {
                 return result
                         .setType(EventType.PLAYER_JOINED)
                         .addProperty(
-                                PlayerSpecificGameEvent.PLAYER_NAME,
-                                gameEvent.getProperty(GameEvent.PLAYER)
-                                        .map((p) -> ((SimplifiedPlayer) p).getName())
-                                        .orElse("Unknown")
+                                PlayerSpecificGameEvent.PLAYER,
+                                gameEvent.getProperty(GameEvent.PLAYER).orElse("Unknown")
                         );
             case SPECTATOR_JOINED:
                 return result
                         .setType(EventType.SPECTATOR_JOINED)
                         .addProperty(
-                                PlayerSpecificGameEvent.PLAYER_NAME,
-                                gameEvent.getProperty(GameEvent.SPECTATOR)
-                                        .map((p) -> ((SimplifiedPlayer) p).getName())
-                                        .orElse("Unknown")
+                                PlayerSpecificGameEvent.SPECTATOR,
+                                gameEvent.getProperty(GameEvent.SPECTATOR).orElse("Unknown")
                         );
         }
 

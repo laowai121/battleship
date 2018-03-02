@@ -208,14 +208,14 @@ var battleshipApp = new Vue({
             });
 
             if (!error) {
-                spectator.push(spectator);
+                this.spectators.push(spectator);
                 this.showToast('Spectator <b>' + escapeHtml(spectator.name || 'Unknown') + '</b> joined the game');
             }
         },
         reloadGameState: function () {
             var that = this;
 
-            battleshipApi.getGameState(playerToken, function (gameState) {
+            battleshipApi.getGameState(this.playerToken, function (gameState) {
                 that.gameState = gameState;
             });
         }

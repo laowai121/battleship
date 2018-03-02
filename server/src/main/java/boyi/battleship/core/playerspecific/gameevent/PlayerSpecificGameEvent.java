@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerSpecificGameEvent {
-    public static final String PLAYER_NAME = "playerName";
+    public static final String PLAYER = "player";
+    public static final String SPECTATOR = "spectator";
 
     @NotNull
     private EventType type;
