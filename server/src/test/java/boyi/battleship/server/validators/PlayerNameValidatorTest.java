@@ -12,8 +12,7 @@ import static org.assertj.core.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PlayerNameValidatorTest {
-    private static final String ERROR_NAME_IS_TOO_LONG = "Player Name is too long (maximum length: 20)";
-    private static final String VALID_NAME = "Player Name is valid";
+    private static final String VALID_NAME = PlayerNameValidator.PLAYER_NAME_VALID;
 
     @Autowired
     private PlayerNameValidator playerNameValidator;
@@ -42,7 +41,7 @@ public class PlayerNameValidatorTest {
     @Test
     public void testEmpty() {
         assertThat(testEmpty.isValid()).isEqualTo(false);
-        assertThat(testEmpty.getMessage()).isEqualTo("Please, enter Player Name");
+        assertThat(testEmpty.getMessage()).isEqualTo(PlayerNameValidator.ENTER_PLAYER_NAME);
     }
 
     @Test
@@ -54,7 +53,7 @@ public class PlayerNameValidatorTest {
     @Test
     public void testTooLong() {
         assertThat(testTooLong.isValid()).isEqualTo(false);
-        assertThat(testTooLong.getMessage()).isEqualTo(ERROR_NAME_IS_TOO_LONG);
+        assertThat(testTooLong.getMessage()).isEqualTo(PlayerNameValidator.PLAYER_NAME_TOO_LONG);
     }
 
     @Test

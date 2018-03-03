@@ -7,6 +7,12 @@ import org.springframework.stereotype.Service;
 
 @Service("requestValidator")
 public class RequestValidator {
+    public static final String INVALID_MAX_SPECTATORS = "max spectators should be between "
+            + 0 + " and " + Game.SPECTATORS_MAX + " (inclusive)";
+    public static final String CANT_CREATE_GAME_WITHOUT_SPECTATORS_AS_SPECTATOR =
+            "you can't create a game that doesn't accept spectators "
+            + "and join as spectator at the same time";
+
     @Autowired
     private PlayerNameValidator playerNameValidator;
 
@@ -23,11 +29,9 @@ public class RequestValidator {
 
         if (maxSpectators != Game.UNLIMITED_SPECTATORS) {
             if (maxSpectators < 0 || maxSpectators > Game.SPECTATORS_MAX) {
-                return new ValidationResult(false, "max spectators should be between "
-                        + 0 + " and " + Game.SPECTATORS_MAX + " (inclusive)");
+                return new ValidationResult(false, INVALID_MAX_SPECTATORS);
             } else if (maxSpectators == 0 && joinAsSpectator) {
-                return new ValidationResult(false, "you can't create a game that doesn't accept spectators "
-                        + "and join as spectator at the same time");
+                return new ValidationResult(false, CANT_CREATE_GAME_WITHOUT_SPECTATORS_AS_SPECTATOR);
             }
         }
 

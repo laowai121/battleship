@@ -6,19 +6,25 @@ import org.springframework.stereotype.Service;
 
 @Service("gameKeyValidator")
 public class GameKeyValidator {
+    public static final String ENTER_GAME_KEY = "Please, enter Game Key";
+    public static final String INVALID_GAME_KEY = "Invalid Game Key. "
+            + "Game Key should be a sequence of hexadecimal digits "
+            + KeyGenerator.DEFAULT_KEY_LENGTH;
+    public static final String GAME_KEY_VALID = "Game Key is valid";
+
     @NotNull
     public ValidationResult validate(@NotNull String gameKey) {
         if (gameKey.isEmpty()) {
-            return new ValidationResult(false, "Please, enter Game Key");
+            return new ValidationResult(false, ENTER_GAME_KEY);
         }
 
         if (gameKey.length() != KeyGenerator.DEFAULT_KEY_LENGTH
-                || gameKey.chars().mapToObj((n) -> (char) n).anyMatch((n) -> KeyGenerator.KEY_CHARS.indexOf(n) < 0)) {
-            return new ValidationResult(false,
-                    "Invalid Game Key. Game Key should be a sequence of hexadecimal digits "
-                            + KeyGenerator.DEFAULT_KEY_LENGTH);
+                || gameKey.chars()
+                          .mapToObj((n) -> (char) n)
+                          .anyMatch((n) -> KeyGenerator.KEY_CHARS.indexOf(n) < 0)) {
+            return new ValidationResult(false, INVALID_GAME_KEY);
         }
 
-        return new ValidationResult(true, "Game Key is valid");
+        return new ValidationResult(true, GAME_KEY_VALID);
     }
 }

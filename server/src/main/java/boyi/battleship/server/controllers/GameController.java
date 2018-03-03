@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-
-// TODO: probably shouldn't use Player and (especially) Game in this class
 @RestController
 @RequestMapping("/game")
 public class GameController {
@@ -44,13 +42,11 @@ public class GameController {
             @RequestParam(name = "joinAsSpectator", required = false, defaultValue = "false") boolean joinAsSpectator) {
         ValidationResult validationResult = requestValidator.validateCreateGameRequest(
                 playerName, maxSpectators, joinAsSpectator);
-
         if (!validationResult.isValid()) {
             return responseBuilder.buildErrorResponse("Unable to create the game: " + validationResult.getMessage());
         }
 
         JoinGameResult joinGameResult = gameManager.createAndJoinGame(playerName, maxSpectators, joinAsSpectator);
-
         if (!joinGameResult.isSuccess()) {
             return responseBuilder.buildErrorResponse("Unable to join the game: " + joinGameResult.getErrorMessage());
         }
@@ -71,7 +67,6 @@ public class GameController {
         gameKey = gameKey.toLowerCase();
 
         ValidationResult validationResult = requestValidator.validateJoinGameRequest(playerName, gameKey);
-
         if (!validationResult.isValid()) {
             return responseBuilder.buildErrorResponse("Unable to join the game: " + validationResult.getMessage());
         }
@@ -82,7 +77,6 @@ public class GameController {
         }
 
         JoinGameResult joinGameResult = gameManager.tryJoinPlayer(game.get(), playerName, joinAsSpectator);
-
         if (!joinGameResult.isSuccess()) {
             return responseBuilder.buildErrorResponse("Unable to join the game: " + joinGameResult.getErrorMessage());
         }
@@ -124,12 +118,12 @@ public class GameController {
 
     @RequestMapping(value = "/getExtendedState", method = RequestMethod.GET)
     private BattleshipResponse getExtendedGameState(@RequestParam(name = "playerToken") String playerToken) {
-        Optional<Player> player = gameManager.authorize(playerToken);
-        if (!player.isPresent()) {
-            return responseBuilder.buildErrorResponse("Invalid player token");
-        }
+        return gameManager.authorize(playerToken)
+                .map(player -> responseBuilder.buildExtendedGameStateResponse(
+                        gameManager.getExtendedGameStateFor(player))
+                )
+                .orElseGet(() -> responseBuilder.buildErrorResponse("Invalid player token"));
 
-        return responseBuilder.buildExtendedGameStateResponse(gameManager.getExtendedGameStateFor(player.get()));
     }
 
     @RequestMapping(value = "/getEventHistory", method = RequestMethod.GET)

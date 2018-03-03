@@ -1,6 +1,5 @@
 package boyi.battleship.server.validators;
 
-import boyi.battleship.core.keygenerator.KeyGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,9 +12,8 @@ import static org.assertj.core.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GameKeyValidatorTest {
-    private static final String ERROR_INVALID_KEY = "Invalid Game Key. "
-            + "Game Key should be a sequence of hexadecimal digits " + KeyGenerator.DEFAULT_KEY_LENGTH;
-    private static final String VALID_KEY = "Game Key is valid";
+    private static final String ERROR_INVALID_KEY = GameKeyValidator.INVALID_GAME_KEY;
+    private static final String VALID_KEY = GameKeyValidator.GAME_KEY_VALID;
 
     @Autowired
     private GameKeyValidator gameKeyValidator;
@@ -50,7 +48,7 @@ public class GameKeyValidatorTest {
     @Test
     public void testEmpty() {
         assertThat(testEmpty.isValid()).isEqualTo(false);
-        assertThat(testEmpty.getMessage()).isEqualTo("Please, enter Game Key");
+        assertThat(testEmpty.getMessage()).isEqualTo(GameKeyValidator.ENTER_GAME_KEY);
     }
 
     @Test
