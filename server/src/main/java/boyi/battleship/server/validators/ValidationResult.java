@@ -3,6 +3,8 @@ package boyi.battleship.server.validators;
 import org.jetbrains.annotations.NotNull;
 
 public class ValidationResult {
+    public static final String VALID = "valid";
+
     private boolean valid;
 
     @NotNull
@@ -14,7 +16,7 @@ public class ValidationResult {
     }
 
     public ValidationResult(boolean valid) {
-        this(valid, "valid");
+        this(valid, VALID);
     }
 
     public boolean isValid() {

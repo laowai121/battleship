@@ -1,6 +1,7 @@
 package boyi.battleship.server.validators;
 
 import boyi.battleship.core.chat.ChatMessage;
+import boyi.battleship.server.validators.impl.ChatMessageValidatorImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,15 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.stream.IntStream;
-
+import static boyi.battleship.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ChatMessageValidatorTest {
-    private static final String MESSAGE_VALID = ChatMessageValidator.MESSAGE_VALID;
-    private static final String MESSAGE_TOO_LONG = ChatMessageValidator.MESSAGE_TOO_LONG;
+    private static final String MESSAGE_VALID = ChatMessageValidatorImpl.MESSAGE_VALID;
+    private static final String MESSAGE_TOO_LONG = ChatMessageValidatorImpl.MESSAGE_TOO_LONG;
 
     @Autowired
     private ChatMessageValidator chatMessageValidator;
@@ -44,7 +44,7 @@ public class ChatMessageValidatorTest {
     @Test
     public void testEmpty() {
         assertThat(testEmpty.isValid()).isEqualTo(false);
-        assertThat(testEmpty.getMessage()).isEqualTo(ChatMessageValidator.MESSAGE_CANT_BE_EMPTY);
+        assertThat(testEmpty.getMessage()).isEqualTo(ChatMessageValidatorImpl.MESSAGE_CANT_BE_EMPTY);
     }
 
     @Test
@@ -75,12 +75,5 @@ public class ChatMessageValidatorTest {
     public void testTooLong2() {
         assertThat(testTooLong2.isValid()).isEqualTo(false);
         assertThat(testTooLong2.getMessage()).isEqualTo(MESSAGE_TOO_LONG);
-    }
-
-    private String generateLongString(int length) {
-        StringBuilder sb = new StringBuilder();
-        IntStream.rangeClosed(1, length)
-                .forEach((n) -> sb.append("a"));
-        return sb.toString();
     }
 }

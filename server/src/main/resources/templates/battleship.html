@@ -65,10 +65,10 @@
             </div>
             <div class="right-panel">
                 <div class="player-container" v-bind:class="{ 'me': playerRole != PLAYER_ROLE.SPECTATOR }">
-                    {{ playerRole == PLAYER_ROLE.SPECTATOR ? players.a.name : playerName }}
+                    {{ playerRole == PLAYER_ROLE.SPECTATOR ? players.a.name : playerName + ' (me)' }}
                 </div>
-                <div class="player-container" v-bind:class="{ 'opponent': playerRole != PLAYER_ROLE.SPECTATOR }">
-                    {{ playerRole == PLAYER_ROLE.SPECTATOR ? players.b.name : opponentName }}
+                <div class="player-container" v-show="opponentName" v-bind:class="{ 'opponent': playerRole != PLAYER_ROLE.SPECTATOR }">
+                    {{ playerRole == PLAYER_ROLE.SPECTATOR ? players.b.name : opponentName + ' (opponent)' }}
                 </div>
                 <div class="player-container spectator" v-bind:class="playerId == spectator.id" v-for="spectator in spectators">{{ spectator.name }}</div>
             </div>

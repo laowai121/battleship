@@ -184,7 +184,7 @@ var battleshipApp = new Vue({
             var playerB = this.players.b;
             var error = false;
 
-            if (!playerA) {
+            if (!playerA.id) {
                 playerA.id = player.id;
                 playerA.name = player.name;
             } else if (!playerB.id) {

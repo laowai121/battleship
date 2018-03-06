@@ -95,9 +95,10 @@ hr.menu-divider {
 
 .game-container .right-panel {
     width: 20%;
-    background-color: rgba(189, 20, 20, 0.29);
+    background-color: rgba(23, 20, 20, 0.29);
     height: 100%;
     float: left;
+    color: #ffffff;
 }
 
 .game-container .upper-container {

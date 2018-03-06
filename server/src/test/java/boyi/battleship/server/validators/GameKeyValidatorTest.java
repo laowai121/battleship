@@ -1,5 +1,6 @@
 package boyi.battleship.server.validators;
 
+import boyi.battleship.server.validators.impl.GameKeyValidatorImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,8 +13,8 @@ import static org.assertj.core.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GameKeyValidatorTest {
-    private static final String ERROR_INVALID_KEY = GameKeyValidator.INVALID_GAME_KEY;
-    private static final String VALID_KEY = GameKeyValidator.GAME_KEY_VALID;
+    private static final String ERROR_INVALID_KEY = GameKeyValidatorImpl.INVALID_GAME_KEY;
+    private static final String VALID_KEY = GameKeyValidatorImpl.GAME_KEY_VALID;
 
     @Autowired
     private GameKeyValidator gameKeyValidator;
@@ -48,7 +49,7 @@ public class GameKeyValidatorTest {
     @Test
     public void testEmpty() {
         assertThat(testEmpty.isValid()).isEqualTo(false);
-        assertThat(testEmpty.getMessage()).isEqualTo(GameKeyValidator.ENTER_GAME_KEY);
+        assertThat(testEmpty.getMessage()).isEqualTo(GameKeyValidatorImpl.ENTER_GAME_KEY);
     }
 
     @Test

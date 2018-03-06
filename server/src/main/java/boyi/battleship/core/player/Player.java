@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class Player extends BattleshipObject {
+    public static final int MAX_NAME_LENGTH = 20;
+
     @NotNull
     private String name;
 
