@@ -33,17 +33,21 @@ var battleshipApp = new Vue({
         playerToken: '',
         gameKey: '',
         playerName: '',
+        myBattleField: null,
+        opponentBattleField: null,
         playerId: '',
         playerRole: PLAYER_ROLE.PLAYER_A,
         gameState: GAME_STATE.LOADING,
         players: {
             a: {
                 id: '',
-                name: ''
+                name: '',
+                battleField: null
             },
             b: {
                 id: '',
-                name: ''
+                name: '',
+                battleField: null
             }
         },
         spectators: []
@@ -79,11 +83,13 @@ var battleshipApp = new Vue({
                 if (playerA) {
                     that.players.a.id = playerA.id;
                     that.players.a.name = playerA.name;
+                    that.players.a.battleField = extendedGameState.battleFieldA;
                 }
 
                 if (playerB) {
                     that.players.b.id = playerB.id;
                     that.players.b.name = playerB.name;
+                    that.players.b.battleField = extendedGameState.battleFieldB;
                 }
 
                 extendedGameState.spectators.forEach(function (spectator) {
@@ -91,10 +97,12 @@ var battleshipApp = new Vue({
                 });
 
                 that.gameState = extendedGameState.gameState;
+
+
             });
 
             battleshipApi.loadChatHistory(playerToken, function (history) {
-                that.$refs.chat.load(history);
+                that.$refs.chat.populate(history);
             });
         };
 

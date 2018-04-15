@@ -24,7 +24,7 @@ var BattleshipChat = {
         div.scrollTop = div.scrollHeight - div.clientHeight;
     },
     methods: {
-        load: function (history) {
+        populate: function (history) {
             var that = this;
 
             var existingMessageIds = [];

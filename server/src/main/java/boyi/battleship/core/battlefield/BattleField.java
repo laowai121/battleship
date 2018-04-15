@@ -76,11 +76,17 @@ public class BattleField {
         return result;
     }
 
+    @NotNull
     public ShipMap getShips() {
         return shipMap;
     }
 
-    private boolean checkShipsValid(List<Ship> ships) {
+    @NotNull
+    public BattleFieldCell get(@NotNull BattleFieldCoordinate coord) {
+        return battleField[coord.getRow()][coord.getCol()];
+    }
+
+    private boolean checkShipsValid(@NotNull List<Ship> ships) {
         boolean valid = ships.size() == 10;
 
         if (valid) {
@@ -170,7 +176,8 @@ public class BattleField {
         return valid;
     }
 
-    private List<BattleFieldCell> getSurroundingCells(BattleFieldCoordinate position) {
+    @NotNull
+    private List<BattleFieldCell> getSurroundingCells(@NotNull BattleFieldCoordinate position) {
         List<BattleFieldCell> surroundingCells = new ArrayList<BattleFieldCell>();
 
         int row = position.getRow();
@@ -219,15 +226,11 @@ public class BattleField {
         return surroundingCells;
     }
 
-    private BattleFieldCell get(BattleFieldCoordinate coord) {
-        return battleField[coord.getRow()][coord.getCol()];
-    }
-
-    private void set(BattleFieldCoordinate coord, BattleFieldCell cell) {
+    private void set(@NotNull BattleFieldCoordinate coord, @NotNull BattleFieldCell cell) {
         battleField[coord.getRow()][coord.getCol()] = cell;
     }
 
-    private void addShip(Ship ship) {
+    private void addShip(@NotNull Ship ship) {
         for (ShipSegment segment : ship.getSegments()) {
             set(segment.getPosition(), new BattleFieldCell(segment));
         }

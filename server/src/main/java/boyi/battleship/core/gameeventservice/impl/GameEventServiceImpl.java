@@ -1,9 +1,11 @@
-package boyi.battleship.core.gameevent;
+package boyi.battleship.core.gameeventservice.impl;
 
 import boyi.battleship.core.chat.Chat;
 import boyi.battleship.core.chat.ChatMessage;
 import boyi.battleship.core.game.Game;
 import boyi.battleship.core.game.GameEventHistory;
+import boyi.battleship.core.gameevent.GameEvent;
+import boyi.battleship.core.gameeventservice.GameEventService;
 import boyi.battleship.core.player.Player;
 import boyi.battleship.core.playerspecific.chat.PlayerSpecificChatMessageGenerator;
 import boyi.battleship.core.playerspecific.gameevent.PlayerSpecificGameEvent;

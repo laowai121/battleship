@@ -78,9 +78,9 @@ public class Player extends BattleshipObject {
         }
 
         if (isPlayerA()) {
-            game.initPlayerABattleField(battleField);
+            game.initBattleFieldA(battleField);
         } else {
-            game.initPlayerBBattleField(battleField);
+            game.initBattleFieldB(battleField);
         }
     }
 

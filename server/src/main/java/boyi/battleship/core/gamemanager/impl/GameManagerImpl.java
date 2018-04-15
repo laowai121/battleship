@@ -18,7 +18,7 @@ import boyi.battleship.core.store.ChatStore;
 import boyi.battleship.core.game.Game;
 import boyi.battleship.core.gamestate.GameState;
 import boyi.battleship.core.gameevent.GameEventBuilder;
-import boyi.battleship.core.gameevent.GameEventService;
+import boyi.battleship.core.gameeventservice.GameEventService;
 import boyi.battleship.core.player.Player;
 import boyi.battleship.core.player.PlayerType;
 import boyi.battleship.core.ship.Ship;

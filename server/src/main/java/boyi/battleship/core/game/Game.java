@@ -26,10 +26,10 @@ public class Game extends BattleshipObject {
     private Player currentPlayer;
 
     @Nullable
-    private BattleField playerABattleField;
+    private BattleField battleFieldA;
 
     @Nullable
-    private BattleField playerBBattleField;
+    private BattleField battleFieldB;
 
     private int maxSpectators;
 
@@ -45,19 +45,19 @@ public class Game extends BattleshipObject {
     }
 
     public boolean playerAShipsSubmitted() {
-        return playerABattleField != null;
+        return battleFieldA != null;
     }
 
     public boolean playerBShipsSubmitted() {
-        return playerBBattleField != null;
+        return battleFieldB != null;
     }
 
-    public void initPlayerABattleField(@NotNull BattleField battleField) {
-        playerABattleField = battleField;
+    public void initBattleFieldA(@NotNull BattleField battleField) {
+        battleFieldA = battleField;
     }
 
-    public void initPlayerBBattleField(@NotNull BattleField battleField) {
-        playerBBattleField = battleField;
+    public void initBattleFieldB(@NotNull BattleField battleField) {
+        battleFieldB = battleField;
     }
 
     public void addPlayer(@NotNull Player player) {
@@ -82,6 +82,16 @@ public class Game extends BattleshipObject {
     @NotNull
     public Optional<Player> getPlayerB() {
         return Optional.ofNullable(playerB);
+    }
+
+    @NotNull
+    public Optional<BattleField> getBattleFieldA() {
+        return Optional.ofNullable(battleFieldA);
+    }
+
+    @NotNull
+    public Optional<BattleField> getBattleFieldB() {
+        return Optional.ofNullable(battleFieldB);
     }
 
     @NotNull

@@ -1,5 +1,6 @@
-package boyi.battleship.core.keygenerator;
+package boyi.battleship.core.keygenerator.impl;
 
+import boyi.battleship.core.keygenerator.KeyGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 

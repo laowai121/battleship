@@ -1,7 +1,8 @@
-package boyi.battleship.core.gameevent;
+package boyi.battleship.core.gameeventservice;
 
 import boyi.battleship.core.chat.ChatMessage;
 import boyi.battleship.core.game.Game;
+import boyi.battleship.core.gameevent.GameEvent;
 import boyi.battleship.core.player.Player;
 import boyi.battleship.core.playerspecific.gameevent.PlayerSpecificGameEvent;
 import org.jetbrains.annotations.NotNull;
