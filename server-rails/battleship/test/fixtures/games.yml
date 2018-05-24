@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  key: MyString
+  player_a_id: 1
+  player_b_id: 1
+
+two:
+  key: MyString
+  player_a_id: 1
+  player_b_id: 1

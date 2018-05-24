@@ -1,0 +1,210 @@
+.main-menu-container {
+    padding: 20px 35px 40px 35px;
+    width: 350px;
+}
+
+.create-game-menu-container {
+    padding: 45px 40px;
+    width: 440px;
+}
+
+.join-game-menu-container {
+    padding: 45px 40px;
+    width: 440px;
+}
+
+.validation-error {
+    border: 1px solid red;
+    color: red;
+}
+
+.validation-error-container {
+    margin-bottom: 15px;
+    color: #bd2727;
+}
+
+.battleship-container {
+    text-align: center;
+    background-color: rgba(173, 216, 230, 0.60);
+    border: 5px solid cadetblue;
+    border-radius: 15px;
+    margin: auto;
+    box-shadow: 0 0 30px #345d69;
+    position: relative;
+}
+
+.spinner-wrapper {
+    position: absolute;
+    top: 6px;
+    right: 9px;
+}
+
+.spinner {
+    font-size: 33px;
+    color: #3e7a84;
+}
+
+.battleship-container label {
+    text-align: right;
+}
+
+body {
+    /*background-color: rgba(211, 196, 200, 0.24);*/
+    background-image: url('../img/battleship-background-img.jpg');
+    background-size: cover;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+}
+
+#battleship-app {
+    display: flex;
+    height: 100vh;
+    min-width: 754px !important;
+    min-height: 560px !important;
+}
+
+hr.menu-divider {
+    border: 1px solid #579596;
+    box-shadow: 0 0 30px #345d69;
+    margin: 12px 0;
+}
+
+[v-cloak] {
+    display: none !important;
+}
+
+.game-container {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    min-width: 754px !important;
+}
+
+.game-container .main-container {
+    width: 80%;
+    background-color: rgba(76, 212, 206, 0.22);
+    height: 100%;
+    float: left;
+}
+
+.game-container .right-panel {
+    width: 20%;
+    background-color: rgba(23, 20, 20, 0.29);
+    height: 100%;
+    float: left;
+    color: #ffffff;
+}
+
+.game-container .upper-container {
+    width: 100%;
+    height: 70%;
+    background-color: rgba(80, 179, 55, 0.27);
+}
+
+.game-container .chat-container {
+    width: 100%;
+    height: 30%;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.game-container .top-panel {
+    height: 10%;
+    width: 100%;
+    background-color: rgba(1, 1, 1, 0.29);
+    font-weight: bold;
+    color: #e4e0cd;
+    font-size: 16px;
+}
+
+.game-container .main-game-container {
+    height: 90%;
+    width: 100%;
+    background-color: rgba(64, 134, 121, 0.1);
+}
+
+.game-container .battle-field-container {
+    float: left;
+    width: 50%;
+    height: 100%;
+    display: flex;
+}
+
+.game-container .battle-field-left {
+    background-color: rgba(156, 124, 52, 0.19);
+}
+
+.game-container .battle-field-right {
+    background-color: rgba(35, 88, 206, 0.21);
+}
+
+.game-container .battle-field-container canvas {
+    height: 300px;
+    width: 300px;
+    background-color: rgba(177, 224, 251, 0.89);
+    margin: auto;
+    border: 3px solid #1d4637;
+    border-radius: 7px;
+}
+
+.game-container .top-panel-left,
+.game-container .top-panel-right {
+    float: left;
+    width: 50%;
+    height: 100%;
+    display: flex;
+}
+
+.game-container .top-panel-left .inner {
+    margin: auto auto auto 18px;
+}
+
+.game-container .top-panel-right .inner {
+    margin: auto 18px auto auto;
+}
+
+.game-container .chat-history-container {
+    height: calc(100% - 25px);
+    text-align: left;
+    overflow: auto;
+}
+
+.game-container .chat-input-container {
+    height: 25px;
+}
+
+.game-container .chat-input-container .chat-input {
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 25px;
+    float: left;
+    width: calc(100% - 82px);
+}
+
+.game-container .chat-input-container .send-chat-message-btn {
+    float: left;
+    height: 100%;
+    width: 80px;
+    margin-left: 2px;
+}
+
+.game-container .game-key-content {
+    color: #d49797;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.game-container .game-key-content .game-key {
+    display: inline-block;
+    margin-left: 2px;
+}
+
+.game-container .game-key-content:hover {
+    color: #ef5252;
+    cursor: pointer;
+}
